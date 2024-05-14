@@ -15,7 +15,7 @@ smooth day-to-day operations and addressing any issues that may arise. In additi
 also be a dedicated receptionist tasked with handling fundamental restaurant information. 
 This includes providing incoming onsite customers with details about table availability, 
 available dishes, and any other relevant information through our application, they may need 
-to enhance their dining experience.
+to enhance their dining experience.<br>
 <br>
 Frontend <br>
 HTML<br>
@@ -24,7 +24,7 @@ CSS<br>
 Backend <br>
 Javascript<br>
 Backend<br>
-Django web framework
+Django web framework<br>
 <br>
 Authors/Collaborators:<br>
 Muhammad Owais (CS-22080)<br>
