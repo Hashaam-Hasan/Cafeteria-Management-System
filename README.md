@@ -17,11 +17,11 @@ This includes providing incoming onsite customers with details about table avail
 available dishes, and any other relevant information through our application, they may need 
 to enhance their dining experience.
 <br>
-Frontend<br>
+Frontend <br>
 HTML<br>
 CSS<br>
 <br>
-Backend<br>
+Backend <br>
 Javascript<br>
 Backend<br>
 Django web framework
