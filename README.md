@@ -1,6 +1,6 @@
 # Cafeteria-Management-System
 <br>
-Project Description
+Project Description <br>
 The application will serve as a central hub for managing orders and storing important 
 customer details, enhancing our operational efficiency. Moreover, it will offer customers the 
 convenience of reserving tables according to their preferred time slots, streamlining the 
@@ -17,16 +17,17 @@ This includes providing incoming onsite customers with details about table avail
 available dishes, and any other relevant information through our application, they may need 
 to enhance their dining experience.
 <br>
-Frontend
-HTML
-CSS
+Frontend<br>
+HTML<br>
+CSS<br>
 <br>
-Javascript
-Backend
+Backend<br>
+Javascript<br>
+Backend<br>
 Django web framework
 <br>
-Authors/Collaborators:
-Muhammad Owais (CS-22080)
-Zuhaib Noor (CS-22081)
-Hashaam hasan (CS-22098)
-Mudasir Sheikh (CS-22135
+Authors/Collaborators:<br>
+Muhammad Owais (CS-22080)<br>
+Zuhaib Noor (CS-22081)<br>
+Hashaam hasan (CS-22098)<br>
+Mudasir Sheikh (CS-22135)<br>
