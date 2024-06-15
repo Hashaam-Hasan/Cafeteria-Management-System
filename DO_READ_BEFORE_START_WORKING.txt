@@ -1,0 +1,7 @@
+1-Always activate virtual enviornment by using below the command:
+	.\venv\Scripts\activate
+You should be in the base directory in which venv folder exist otherwise it will not activate
+
+2- When you done with your then deactivate it using the:
+	deactivate
+
