@@ -1,4 +1,6 @@
-1-Always activate virtual enviornment by using below the command:
+1- Make virtual enviornment using the command:
+	python -m venv venv
+2-Always activate virtual enviornment by using below the command:
 	.\venv\Scripts\activate
 You should be in the base directory in which venv folder exist otherwise it will not activate
 
