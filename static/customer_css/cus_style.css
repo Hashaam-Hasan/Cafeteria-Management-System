@@ -1,0 +1,395 @@
+/* ------------------------------------------------------------------------------- */
+/*-------------------------------HOME PAGE START----------------------------------------*/
+/* ------------------------------------------------------------------------------- */
+
+/*------------------------------NAVBAR START-----------------------------------*/
+
+.apna {
+  background-color: orange;
+}
+
+#navbar {
+    background-color: rgba(165, 227, 136, 0); /* Completely transparent */
+    transition: background-color 0.3s ease-in-out;
+    color: black;
+    font-weight: bold;
+}
+
+/*-----------offcanvas ids are assigned by bootstrap i am just editng some properties------------ */
+#offcanvasNavbar{
+    background-color: #2f2e2ee0;
+    color: white;
+    box-shadow: 0 0 15px 5px rgba(100, 100, 99, 0.361);
+    border: none;
+}
+/*-----------nav item ids are assigned by bootstrap i am just editng some properties------------ */
+.nav-link{
+    color: white;
+
+}
+
+
+#navbar-heading{
+    font-size: 25px;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow: 2px 2px rgb(246, 255, 65);
+}
+
+#login-btn{
+    border-radius: 20px;
+    border-color: rgb(254, 254, 254);
+    background-color: rgba(165, 227, 136, 0);
+    height: 80%;
+    margin-top: 3%;
+
+}
+
+#login-btn-scrolled{
+    border-color: rgb(0, 0, 0);
+    color: rgb(0, 0, 0);
+    border-radius: 20px;
+    background-color: rgba(165, 227, 136, 0);
+    height: 80%;
+    margin-top: 3%;
+    font-weight: bold;
+}
+
+#login-btn:hover {
+    box-shadow: 0 0 15px 5px rgba(246, 255, 65, 0.7); /* Grey color with reduced spread */
+    border-color: rgb(255, 255, 255,0);
+}
+/* jugaaar pro max */
+#login-btn-scrolled:hover {
+    box-shadow: 0 0 15px 5px rgba(246, 255, 65, 0.7); /* Grey color with reduced spread */
+    border-color: rgb(255, 255, 255,0);
+}
+/* jugaaar pro max */
+
+
+
+/* State of the navbar when scrolling down (semi-transparent) */
+#navbar-scrolled {
+    background-color: rgba(215, 215, 215, 0.585); /* Semi-transparent */
+}
+
+/*------------------------------NAVBAR END-----------------------------------*/
+
+
+/* -------------------------CATEGORY START----------------------------------- */
+
+#catg{
+    background-color: black;
+    color: white;
+}
+.line{
+    color: white;
+    width: 50%;
+    margin: auto;
+    size: 50%;
+ }
+
+
+/* style.css */
+#catg {
+    background-image: url('images/category-bg.jpg'); /* Replace with your background image path */
+    background-size: cover;
+    background-position: center;
+    padding: 20px;
+}
+
+.carousel-item .card {
+    background-color: rgba(213, 205, 159, 0.6); /* White with opacity */
+    border: none;
+    border-radius: 10px;
+    max-width: 400px;  /* Increased width */
+    min-height: 400px; /* Increased height */
+    margin: auto;
+    box-shadow: 0 0 25px 5px rgba(251, 251, 251, 0.411);
+    
+}
+
+.card img {
+    height: 250px;  /* Adjusted height for the image */
+    object-fit: cover;
+}
+
+.card-title, .card-text, .card-icon {
+    margin: 10px 0;
+}
+
+.card-icon img {
+    height: 30px;
+    width: 30px;
+}
+
+
+/* -------------------------CATEGORY END----------------------------------- */
+
+
+/*---------------------------------FOOTER START------------------------------------------ */
+.footer {
+    background: linear-gradient(to right, rgb(46, 45, 45), black);;
+    color: white;
+    padding: 40px 0;
+  }
+  .footer a {
+    color: white;
+    text-decoration: none;
+  }
+  .footer a:hover {
+    text-decoration: underline;
+  }
+  .social-icons a {
+    font-size: 1.5em;
+    margin: 0 15px;
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: #2f2e2e;
+    box-shadow: 0 0 15px 5px rgba(209, 210, 207, 0.6);
+    color: white;
+    transition: background-color 0.3s;
+  }
+  .social-icons a:hover {
+    background-color: #6c757d;
+  }
+  hr {
+    border-top: 1px solid #6c757d;
+  }
+
+/*---------------------------------FOOTER END------------------------------------------ */
+
+/* ------------------------------------------------------------------------------- */
+/*-------------------------------HOME PAGE END----------------------------------------*/
+/* ------------------------------------------------------------------------------- */
+
+/* ------------------------------------------------------------------------------- */
+/*-------------------------------CART PAGE START----------------------------------------*/
+/* ------------------------------------------------------------------------------- */
+
+/* --------cart page cover------------- */
+#cart-cont{
+    background-image: url("images/cart-bg.jpg");
+}
+
+#cart-bg{
+    width: 100%;
+    height: 120vh;
+    object-fit: cover;
+}
+
+/* -------------------Main cart body------------ */
+#cart-card{
+    width: 85%; 
+    height: 90%;
+    Overflow-y: scroll;
+    overflow-x: hidden;
+    background-color: rgba(213, 205, 159, 0.6);
+    box-shadow: 0 0 10px 5px rgba(209, 210, 207, 0.3);
+    border-radius: 20px;
+    margin: auto;
+    border: none;
+}
+
+#cart-item-img{
+    object-fit: cover;
+    border-radius: 15px;
+           
+}
+
+.cart-item-heading{
+    background-color: #535912;
+    color: rgb(255, 255, 255);
+    border-radius: 10px;
+    text-align: center;
+    font-size: 20px;
+}
+
+/* ----------------------plus minus quant------------- */
+.quantity {
+    display: flex;
+    align-items: center;
+    background-color: #9A995A;
+    border-radius: 5px;
+    color:rgb(255, 255, 255);    
+}
+
+.quantity h3{
+    font-size: 17px;
+}
+.quantity button {
+    width: 30px;
+    height: 30px;
+    font-weight: bold;
+    font-size: 15px;
+    border-radius: 0px;
+    box-shadow: 0 0 30px 5px rgba(83, 83, 83, 0.6);
+    border: none;
+    
+}
+.quantity input {
+    text-align: center;
+    width: 50px;
+    border-radius: 0;
+    border: none;
+    height: 30px;
+}
+
+/* form {
+    width: 300px;
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 50px;
+  }
+  
+  .value-button {
+    display: inline-block;
+    border: 1px solid #ddd;
+    margin: 0px;
+    width: 40px;
+    height: 20px;
+    text-align: center;
+    vertical-align: middle;
+    padding: 11px 0;
+    background: #eee;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  .value-button:hover {
+    cursor: pointer;
+  }
+  
+  form #decrease {
+    margin-right: -4px;
+    border-radius: 8px 0 0 8px;
+  }
+  
+  form #increase {
+    margin-left: -4px;
+    border-radius: 0 8px 8px 0;
+  }
+  
+  form #input-wrap {
+    margin: 0px;
+    padding: 0px;
+  }
+  
+  input#number {
+    text-align: center;
+    border: none;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    margin: 0px;
+    width: 40px;
+    height: 40px;
+  }
+  
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+  } */
+
+/* --------------item total---------------- */
+
+
+
+#cart-item-price-main-div {
+    background-color: #9A995A;
+    border-radius: 5px;
+    color: rgb(255, 255, 255);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* padding: 15px; */
+}
+
+.rs-text {
+    font-size: 17px;
+    margin: 0;
+    padding-bottom: 2%;
+}
+
+.price-text {
+    font-size: 17px;
+    text-align:center;
+    width: 100%;
+}
+
+.remove-button {
+    margin-top: 20px;
+}
+
+#cart-hr{
+    border-color:black; border-width: 2px; opacity: 100; width: 70%; margin: auto;
+}
+
+/* ------------------------------------------------------------------------------- */
+/*-------------------------------CART PAGE END----------------------------------------*/
+/* ------------------------------------------------------------------------------- */
+
+
+
+/*----------------------------------------------------------------------------------*/
+/*----------------------------------RESERVATION PAGE START----------------------------*/
+/*----------------------------------------------------------------------------------*/
+
+
+
+#reservation-bg{
+    width: 100%;
+    height: 110vh;
+    object-fit: cover;
+    
+}
+
+/* reservation form bg properties */
+.reservation-form {
+    /* background-color: rgba(90, 83, 53, 0.9);  */
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(132, 100, 100, 0.681);
+    backdrop-filter: blur(10px);
+   
+  }
+  
+  .reservation-form h2 {
+    color: #faceae; 
+  }
+  
+  .reservation-form label {
+    color: white; 
+  }
+  
+  .reservation-form .form-control {
+    border-radius: 5px;
+    border: 1px solid #deb887; 
+  }
+  
+#submit-res-btn {
+    background-color: #cd853f; 
+    border: none;
+  }
+  
+  #submit-res-btn:hover {
+    background-color: #d2691e; 
+  }
+
+@media (min-width: 650px) {
+    #reservation-body{
+        width: 50%;
+    }
+}
+/*----------------------------------------------------------------------------------*/
+/*----------------------------------RESERVATION PAGE END----------------------------*/
+/*----------------------------------------------------------------------------------*/

@@ -4,4 +4,8 @@ from django.shortcuts import render
 
 
 def login(request, *args, **kwargs):
-    return render(request, 'registration/login.html')
+    return render(request, 'customer/home.html')
+
+
+def cart(request):
+    return render(request, 'customer/cart.html')

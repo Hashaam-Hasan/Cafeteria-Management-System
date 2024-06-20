@@ -1,0 +1,41 @@
+{% extends 'base/basic.html' %}
+{% load static %}
+
+
+{% block content %}
+
+    <div class="row">
+        <div class="col">
+            
+                    <!--cover image  -->
+                <img src="{% static 'images/customer_images/cover.jpg' %}" class="img-fluid ml-0 mr-0" width="100%" style="height: 100vh; object-fit: cover;">
+            
+        </div>
+    </div>
+    <!-------------------------------COVER END --------------------------------------------->
+   <!------------------------------- Category START------------------------------------>
+   <div class="row">
+    <div class="col" id="catg">
+        <h2>Categories</h2>
+        <!------------------------------CARD SLIDER START---------------------->
+        <div id="categoryCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner" id="carousel-inner">
+                
+                <!-- Cards will be inserted here dynamically -->
+                
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#categoryCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        <!--------------------------------CARD SLIDER END---------------------------->
+    </div>
+</div>
+<!------------------------------- Category ENDs------------------------------------>
+    
+{% endblock %}

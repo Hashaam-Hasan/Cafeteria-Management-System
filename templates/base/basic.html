@@ -1,23 +1,130 @@
+{% load static %}
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Custom Css -->
+     <!-- Zobo css -->
+    <link rel="stylesheet" href="{% static 'customer_css/cus_style.css' %}">
+
+
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <title>CAFETERIA MANAGEMENT SYSTEM</title>
 </head>
 <body>
         
-    <header>
-        <h1>NAVBAR</h1>
-    </header>
-
-    <main>
+    <div class="container-fluid ps-0 pe-0">        
+    <!---------------------------------------------NAV BAR START------------------>
+        <div class="row">
+            <div class="col-12">
+                <nav id="navbar" class="navbar fixed-top">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="#" id="navbar-heading">C for Cafeteria</a>
+                        <div class="d-flex ms-auto">
+                            <!-- Login Button -->
+                            <button class="btn btn-primary me-2" type="button" id="login-btn">
+                                <img src="{% static 'icons/user-regular.svg' %}" height="20px" width="20px">
+                                Login
+                            </button>
+                            <!-- Navbar Toggler -->
+                            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                                <img src="{% static 'icons/navbar-bars.svg' %}" height="40px" width="40px">
+                            </button>
+                        </div>
+                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                            <div class="offcanvas-header">
+                                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                            </div>
+                            <div class="offcanvas-body">
+                                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">Cart</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">Reserve a Table!</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">Contact Us</a>
+                                    </li>
+                                    
+                                </ul>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-------------------------------NAV BAR END------------------------------------>
+        
+    
         {% block content %}{% endblock %}
-    </main>
+    
+        <!-------------------------FOOTER START--------------------------->
+        
+        <div class = "row">
+            <div class = "col">
+                <footer class="footer">
+                    <div class="container text-center">
+                      <h5 class="mb-4">Follow Us</h5>
+                      <div class="social-icons">
+                        <a href="#" class="fab fa-facebook-f"></a>
+                        <a href="#" class="fab fa-twitter"></a>
+                        <a href="#" class="fab fa-instagram"></a>
+                        <a href="#" class="fab fa-linkedin-in"></a>
+                      </div>
+                      <hr class="my-4">
+                      <div class="row">
+                        <div class="col-md-4">
+                          <h6>Quick Links</h6>
+                          <ul class="list-unstyled">
+                            <li><a href="#">Home</a></li>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Contact</a></li>
+                          </ul>
+                        </div>
+                        <div class="col-md-4">
+                          <h6>Resources</h6>
+                          <ul class="list-unstyled">
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">FAQs</a></li>
+                            <li><a href="#">Support</a></li>
+                          </ul>
+                        </div>
+                        <div class="col-md-4">
+                          <h6>Legal</h6>
+                          <ul class="list-unstyled">
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                          </ul>
+                        </div>
+                      </div>
+                      <hr class="my-4">
+                      <p>&copy; 2024  C for Cafeteria</p>
+                    </div>
+                  </footer>
+            </div>
+        </div>
 
-    <footer>
-        <h1>FOOTER</h1>
-    </footer>
+        <!-------------------------FOOTER END----------------------------->
+    </div>
 
+
+
+    <!-- Bootstrap Javascript -->
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+
+    <!-- Custom Javascript -->
+     <!-- Zobo Javascript -->
+    <script src="{% static 'javascript/cus_script.js' %}"></script>
 </body>
 </html>
