@@ -2,27 +2,97 @@
 {% load static %}
 
 
-{% block content %}
 
-    <div class="row">
-        <div class="col">
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'customer_css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+    <style>
+        #catg {
+            background-image: url('/static/images/customer_images/category-bg.jpg');
+            background-size: cover;
+            /* background-position: center; */
+            padding: 20px;
+        }
+
+        #catg>h2 {
+            text-align: center;
+            font-size: 2.8rem;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: url("/static/images/customer_images/cover.jpg") no-repeat;
+            background-size: cover;
             
-                    <!--cover image  -->
-                <img src="{% static 'images/customer_images/cover.jpg' %}" class="img-fluid ml-0 mr-0" width="100%" style="height: 100vh; object-fit: cover;">
-            
+        }
+
+        body::before{
+            backdrop-filter: none;
+        }
+
+        
+
+    </style>
+    
+   <!-----------------------------Carousel Start---------------------------------------->
+
+   <div class="carousel-custom">
+
+    <div class="carousel-inner-custom">
+
+        <div class="carousel-item-custom active a">
+            <img src="{% static 'images/customer_images/caro_1.jpg' %}" alt="" class="icon">
         </div>
+        <div class="carousel-item-custom not-active b">
+            <img src="{% static 'images/customer_images/caro_2.jpg' %}" alt="" class="icon">
+        </div>
+        <div class="carousel-item-custom not-active c">
+            <img src="{% static 'images/customer_images/caro_3.jpg' %}" alt="" class="icon">
+        </div>
+        <button class="carousel-control prev" onclick="prevSlide()">&#10094;</button>
+    <button class="carousel-control next" onclick="nextSlide()">&#10095;</button> 
+
     </div>
-    <!-------------------------------COVER END --------------------------------------------->
-   <!------------------------------- Category START------------------------------------>
-   <div class="row">
+
+    
+    <div class="content-carousel">
+        <h2>WELCOME</h2>
+        <h4>HOMIES!</h4>
+    </div>  
+
+</div>
+
+<div class="reserve-table-section-new">
+    <div class="reserve-content">
+        <h2>Reserve A Table!</h2>
+        <a href="">Reserve</a>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eligendi corrupti accusamus repellendus quis sit, iure ut dolorum, numquam iste, nemo doloribus! Soluta ea incidunt impedit quibusdam velit sed animi aliquid!</p>
+    </div>
+    <div class="reserve-img">
+        <img src="{% static 'images/customer_images/reservation_img2.jpg' %}" alt="">
+    </div>
+    
+  </div>
+
+
+
+<!-----------------------------Carousel Ends---------------------------------------->
+
+<!------------------------------- Category START------------------------------------>
+<div class="row">
     <div class="col" id="catg">
-        <h2>Categories</h2>
+        <h2 class="mb-5">Categories</h2>
         <!------------------------------CARD SLIDER START---------------------->
         <div id="categoryCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner" id="carousel-inner">
                 
                 <!-- Cards will be inserted here dynamically -->
-                
+
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -37,5 +107,4 @@
     </div>
 </div>
 <!------------------------------- Category ENDs------------------------------------>
-    
 {% endblock %}

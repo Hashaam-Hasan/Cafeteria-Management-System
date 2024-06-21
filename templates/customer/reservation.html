@@ -1,0 +1,54 @@
+{% extends 'base/basic.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<!---------------------------------------------------- Reservation Form ---------------------------------------------------->
+<div class="row">
+    <div class="col p-0">
+        <img src="{% static 'images/customer_images/res-bg.jpeg' %}" alt="cart-background" class="img-fluid ml-0 mr-0" id="reservation-bg">
+                <div class="card-img-overlay" style="margin-top: 5%; color: white;">
+                    <!-- Reservation form start -->
+                    <div id = "reservation-body" class="reservation-form mt-5 mx-auto">
+                        <h2 class="text-center mb-4">Table Reservation Form</h2>
+                        <form>
+                          <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+                          </div>
+                          <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                          </div>
+                          <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" placeholder="Enter your phone number" required>
+                          </div>
+                          <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" class="form-control" id="date" required>
+                          </div>
+                          <div class="form-group">
+                            <label for="time">Time</label>
+                            <input type="time" class="form-control" id="time" required>
+                          </div>
+                          <div class="form-group">
+                            <label for="persons">Number of Persons</label>
+                            <input type="number" class="form-control" id="persons" placeholder="Enter number of persons" required min="1">
+                          </div>
+                          <div class="form-group">
+                            <label for="requests">Special Requests</label>
+                            <textarea class="form-control" id="requests" rows="3" placeholder="Any special requests?"></textarea>
+                          </div>
+                          <button type="submit" class="btn btn-primary btn-block m-2 mb-0" id="submit-res-btn">Submit Reservation</button>
+                        </form>
+                      </div>
+                    <!-- Reservation form end -->
+                </div>
+                
+    </div>
+</div>
+
+
+{% endblock %}

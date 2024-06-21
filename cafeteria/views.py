@@ -9,3 +9,6 @@ def login(request, *args, **kwargs):
 
 def cart(request):
     return render(request, 'customer/cart.html')
+
+def reservation(request):
+    return render(request, 'customer/reservation.html')

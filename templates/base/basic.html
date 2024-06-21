@@ -14,9 +14,75 @@
 
     <!-- Bootstrap css -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+
+    
+
+    <!-- Extra Css -->
+    {% block extra_css %}
+    {% endblock %}
+
     <title>CAFETERIA MANAGEMENT SYSTEM</title>
 </head>
 <body>
+
+    <style>
+            body {
+                overflow-x: hidden;
+            }
+            .nav-item {
+                    padding: 1rem 2rem;
+                }
+
+            .nav-item .nav-link{
+                        color: white;
+                        text-decoration: none;
+                        font-size: 1.4rem;
+                        font-weight: bold;
+                        padding-left: 1rem;
+                        display: block;
+                        width: 100%;
+                        transition: all 0.3s ease-in-out;
+                        position: relative;
+                        text-align: left;
+                }
+
+            .nav-item .nav-link:hover {
+                    scale: 1.02;
+                    color: orange;
+                }
+
+            .nav-item .nav-link::before{
+                    content: "";
+                    position: absolute;
+                    width: 10px;
+                    height: 10px;
+                    background-color: red;
+                    left: -20px;
+                    top: 35%;
+                    transform: rotate(45deg) ;
+                    transition: all 0.3s ease-in-out;
+                }
+
+            .nav-item .nav-link:hover::before{
+                    transform: rotate(360deg);
+                }
+            .offcanvas-title {
+                    font-size: 2.5rem;
+                    font-weight: bolder;
+                    color: white;
+                    text-align: center;
+                    margin-bottom: 1rem;
+                    outline: none;
+                    padding: 0 1rem;
+                    
+                }
+                #offcanvasNavbar{
+                background-color: black;
+                color: white;
+                box-shadow: 0 0 15px 5px rgba(100, 100, 99, 0.361);
+                border: none;
+            }
+    </style>
         
     <div class="container-fluid ps-0 pe-0">        
     <!---------------------------------------------NAV BAR START------------------>
@@ -39,7 +105,7 @@
                         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                             <div class="offcanvas-header">
                                 <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                <button type="button" class="btn-close bg-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                             </div>
                             <div class="offcanvas-body">
                                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
@@ -124,7 +190,41 @@
     <script src="{% static 'js/bootstrap.js' %}"></script>
 
     <!-- Custom Javascript -->
+    <script src="{% static 'javascript/home.js' %}"></script>
      <!-- Zobo Javascript -->
-    <script src="{% static 'javascript/cus_script.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    const categories = [
+        { name: 'Pastries', text: 'Delicious pastries to satisfy your sweet tooth.', icon: '{% static "icons/pastry-icon.svg" %}', image: '{% static "images/customer_images/cover.jpg" %}' },
+        { name: 'Desserts', text: 'Sweet and savory desserts to end your meal.', icon: '{% static "icons/dessert-icon.svg" %}', image: '{% static "images/customer_images/cat-dessert.jpeg" %}' },
+        { name: 'Coffee and Tea', text: 'Savor the best in coffee and tea, any time of day', icon: '{% static "icons/coffee-icon.svg" %}', image: '{% static "images/customer_images/cat-tea.jpg" %}' },
+        { name: 'Beverages', text: 'Refreshing drinks to quench your thirst.', icon: '{% static "icons/beverage-icon.svg" %}', image: '{% static "images/customer_images/cat-bev.jpeg" %}' },
+        { name: 'Breakfast', text: 'Enjoy a hearty breakfast to fuel your day.', icon: '{% static "icons/breakfast-icon.svg" %}', image: '{% static "images/customer_images/cat-bf.jpg" %}' },
+        { name: 'Lunch', text: 'Delicious lunch meals for your afternoon break.', icon: '{% static "icons/lunch-icon.svg" %}', image: '{% static "images/customer_images/cat-lunch.jpg" %}' },
+        { name: 'Soups', text: 'Indulge in our variety of fresh, tasty soups.', icon: '{% static "icons/soup-icon.svg" %}', image: '{% static "images/customer_images/cat-soup.jpg" %}' }
+    ];
+
+    const carouselInner = document.getElementById('carousel-inner');
+
+    categories.forEach((category, index) => {
+        const div = document.createElement('div');
+        div.className = `carousel-item ${index === 0 ? 'active' : ''}`;
+        div.innerHTML = `
+            <div class="card text-center mx-auto">
+                <img src="${category.image}" class="card-img-top" alt="${category.name}">
+                <div class="card-body">
+                    <h5 class="card-title">${category.name}</h5>
+                    <p class="card-text">${category.text}</p>
+                    <div class="card-icon">
+                        <button type="button" class="btn btn-outline-primary" style = "width:25%; color: black; border-color: black; border-radius: 15px;">Go!</button>
+                        
+                    </div>
+                </div>
+            </div>
+        `;
+        carouselInner.appendChild(div);
+    });
+});
+    </script>
 </body>
 </html>
