@@ -12,3 +12,6 @@ def cart(request):
 
 def reservation(request):
     return render(request, 'customer/reservation.html')
+
+def signup(request):
+    return render(request, 'accounts/sign_in_up.html')

@@ -16,6 +16,10 @@
             padding: 20px;
         }
 
+        .carousel-item .card {
+            backdrop-filter: blur(10px);
+        }
+
         #catg>h2 {
             text-align: center;
             font-size: 2.8rem;
@@ -33,6 +37,107 @@
 
         body::before{
             backdrop-filter: none;
+        }
+
+        marquee {
+            width: 100%;
+            position: relative;
+            z-index: 999;
+            background-color: white;
+            height: 45px;
+            line-height: 40px;
+            margin-bottom: 5rem;            
+            background-color: white;
+            backdrop-filter: blur(10px);
+        }
+        /* marquee {
+            width: 100%;
+            position: relative;
+            z-index: 999;
+            background-color: white;
+            height: 150px;
+            line-height: 30px;
+            margin-bottom: 5rem;            
+            background-color: transparent;
+            backdrop-filter: blur(10px);
+        } */
+
+        /*  */
+
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scrollLeft 10s linear infinite;
+        }
+
+        @keyframes scrollLeft {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+
+        /* .category-marquee-circle {
+            display: inline-block;
+            margin: 0 10px;
+            text-align: center;
+            position: relative;
+            text-decoration: none;
+            color: white;
+            height: 100%;
+            
+            padding: 2rem;
+            border-radius: 10%;
+            transition: all 0.5s ease;
+        } */
+
+/*         
+
+        .category-marquee-circle:hover {
+            background-color: #FF204E;
+            scale: 1.02;
+        }
+
+        .category-marquee-circle img {
+            border-radius: 50px;
+        }
+
+        .category-marquee-circle h4 {
+            position: absolute;
+            top: 1px;
+            left: 21%;
+            font-size: 20px;
+        } */
+
+        .category-marquee-circle  {
+            display: inline-block;
+            position: relative;
+            padding: 0.4rem;
+            color: black;
+            transition: all 0.5s all;
+            
+        }
+
+        .category-marquee-circle:hover {
+            
+            scale: 1.02;
+            background-color: red;
+            color: white;
+        }
+
+        .category-marquee-circle h4 {
+            text-decoration: none;
+            font-size: 17px;
+            
         }
 
         
@@ -66,6 +171,47 @@
     </div>  
 
 </div>
+
+<marquee onmouseover="stop()" onmouseout="start()" direction="left">
+    
+
+    <!-- <a class="category-marquee-circle" href="">
+        <img src="{% static 'images/customer_images/cat-bev.jpeg' %}" alt="" width="100px" height="100px">
+        <h4><strong>Beverage</strong></h4>
+    </a> &nbsp; &nbsp;&nbsp; &nbsp;
+    <a class="category-marquee-circle" href="">
+        <img src="{% static 'images/customer_images/cat-bev.jpeg' %}" alt="" width="100px" height="100px">
+        <h4><strong>Beverage</strong></h4>
+    </a> &nbsp; &nbsp;&nbsp; &nbsp;
+    <a class="category-marquee-circle" href="">
+        <img src="{% static 'images/customer_images/cat-bev.jpeg' %}" alt="" width="100px" height="100px">
+        <h4><strong>Beverage</strong></h4>
+    </a> &nbsp; &nbsp;&nbsp; &nbsp;
+    <a class="category-marquee-circle" href="">
+        <img src="{% static 'images/customer_images/cat-bev.jpeg' %}" alt="" width="100px" height="100px">
+        <h4><strong>Beverage</strong></h4>
+    </a> &nbsp; &nbsp;&nbsp; &nbsp; -->
+    <a class="category-marquee-circle" href="">
+        <!-- <img src="{% static 'images/customer_images/cat-bev.jpeg' %}" alt="" width="100px" height="100px"> -->
+        <h4><strong>Beverage</strong></h4>
+    </a> &nbsp; &nbsp;&nbsp; &nbsp;
+    <a class="category-marquee-circle" href="">
+        <!-- <img src="{% static 'images/customer_images/cat-bev.jpeg' %}" alt="" width="100px" height="100px"> -->
+        <h4><strong>Beverage</strong></h4>
+    </a> &nbsp; &nbsp;&nbsp; &nbsp;
+    <a class="category-marquee-circle" href="">
+        <!-- <img src="{% static 'images/customer_images/cat-bev.jpeg' %}" alt="" width="100px" height="100px"> -->
+        <h4><strong>Beverage</strong></h4>
+    </a> &nbsp; &nbsp;&nbsp; &nbsp;
+    <a class="category-marquee-circle" href="">
+        <!-- <img src="{% static 'images/customer_images/cat-bev.jpeg' %}" alt="" width="100px" height="100px"> -->
+        <h4><strong>Beverage</strong></h4>
+    </a> &nbsp; &nbsp;&nbsp; &nbsp;
+    
+    
+    
+
+</marquee>
 
 <div class="reserve-table-section-new">
     <div class="reserve-content">

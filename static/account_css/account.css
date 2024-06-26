@@ -1,0 +1,477 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+
+/* Header ya Navbar (NOT IMPORTANT)------------------------------------------- */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 12px 9.5%;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+}
+
+.navbar a {
+    position: relative;
+    font-size: 16px;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+    margin-right: 30px;
+}
+
+.navbar a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 2px;
+    background: #ffffff;
+    border-radius: 5px;
+    transform: translateY(10px);
+    opacity: 0;
+    transition: .3s;
+}
+
+.navbar a:hover::after {
+    transform: translateY(0);
+    opacity: 7;
+}
+
+
+
+/* Search field (NOT IMPORTANT)--------------------------------------------*/
+.search-bar {
+
+    width: 250px;
+    height: 45px;
+    background: transparent;
+    border: 2px solid #e4e4e4;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+}
+
+.search-bar input {
+    width: 100%;
+    background: transparent;
+    outline: none;
+    border: none;
+    padding-left: 9px;
+    font-size: 16px;
+    color: #e4e4e4;
+}
+
+.search-bar input::placeholder {
+    color: #e4e4e4;
+}
+
+.search-bar button {
+    width: 40px;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+}
+
+.search-bar button i {
+    font-size: 22px;
+    color: #e4e4e4;
+}
+
+
+
+
+/* Asal wali background video --------------------------------------------------------*/
+video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+/* body::before {
+
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('illus/juice.mp4') no-repeat center center;
+    background-size: cover;
+    filter: blur(10px);
+    z-index: 0;
+} */
+
+
+
+
+
+/* Container ya sabse bari div -----------------------------------------------------------------------*/
+.container {
+    width: 87%;
+    height: 86vh;
+    position: absolute;
+    top: 30%; /* header k neeche container ki position set */
+    left: 50%;
+    transform: translate(-50%, -20%);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(194, 149, 59, 0.578); /* Border to separate the container */
+    z-index: 1;
+
+}
+
+
+.container .content {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    color: rgb(221, 190, 106);
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+}
+
+/* Text inside my container--------------------------------------------------------------------- */
+.content .logo {
+    font-size: 40px;
+
+}
+
+.text-sci h2 {
+
+    font-size: 60px;
+    line-height: 1;
+}
+
+.text-sci h2 span {
+
+    font-size: 25px;
+}
+
+.text-sci p {
+    padding-right: 500px; /* Content ki jhaga main container pe welcome k neechey*/
+    font-size: 17px;
+    margin: 10px 0;
+}
+
+.social-icons a i {
+    font-size: 19px;
+    color: #e4e4e4;
+    margin-right: 2px;
+    transition: .3s ease;
+
+}
+
+.social-icons a:hover i {
+
+    transform: scale(1.4);
+}
+
+
+
+
+/* Sign In Sign Up ki Field -----------------------------------------------------------------*/
+
+
+.container .logreg-box{
+    width: calc(100% - 58%);
+    height: 90%;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    overflow: hidden;
+
+}
+
+.logreg-box .form-box{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #32312d61;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(10px);
+
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    color: #ffffff;
+    padding: 20px;
+    flex-direction: column;
+}
+
+
+
+/* Hide additional forms by default */
+.logreg-box .form-box {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    transform: translateX(100%);
+    transition: transform .6s ease;
+    overflow: hidden;
+}
+
+.logreg-box .form-box.sign-in {
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+}
+
+.logreg-box.active-admin .form-box.admin,
+.logreg-box.active-customer .form-box.customer,
+.logreg-box.active-manager .form-box.manager {
+    transform: translateX(0);
+}
+
+.logreg-box.active .form-box.sign-in {
+    /* transform: translateX(100%); */
+    transform: translateX(100%);
+    transition-delay: 0s;
+}
+
+
+/* Adjust form-box width to fit multiple forms */
+.logreg-box {
+    width: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.logreg-box .form-box.register {
+    transform: translateX(500px);
+    transition: transform .6s ease;
+    transition-delay: 0s;
+}
+
+.logreg-box.active .form-box.register {
+    transform: translateX(0);
+    transition-delay: .4s;
+}
+
+
+
+
+
+
+
+/* Issey check karne hn styles saare */
+/* .container .logreg-box {
+
+    width: 60%;
+    height: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    color: #ffffff;
+}
+
+.logreg-box .form-box {
+
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+
+} */
+
+
+
+
+.form-box h2 {
+    font-size: 32px;
+    text-align: center;
+
+}
+
+.form-box .input-box {
+
+    position: relative;
+
+    width: 340px;
+    height: 50px;
+
+    border-bottom: 1.7px solid #e4e4e4;
+    margin: 30px 0;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+
+    
+    font-size: 19px;
+    font-weight: 500;
+    color: #ffffff;
+    padding-right: 28px;
+   
+}
+
+.input-box label {
+
+
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    font-size: 16px;
+    font-weight: 500;
+    pointer-events: none;
+    transition: .2s ease;
+    
+}
+
+.input-box input:focus ~ label,
+.input-box input:valid ~ label {
+    top: -5px;
+}
+
+.input-box .icon {
+    position: absolute;
+    top: 13px;
+    right: 0;
+    font-size: 19px;
+
+}
+
+.form-box .remember-forgot {
+    font-size: 14.5px;
+    font-weight: 500;
+    margin: -15px 0 15px;
+    display: flex;
+
+
+    justify-content: space-between;
+    width: 100%;
+}
+
+.remember-forgot label input {
+    accent-color: #000000;
+    margin-right: 3px;
+}
+
+.remember-forgot a {
+    color: #e4e4e4;
+    text-decoration: none;
+}
+
+.remember-forgot a:hover {
+
+    text-decoration: underline;
+}
+
+.form-box .btn {
+    width: 100%;
+    height: 45px;
+    background: #4a2b0f;
+
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    font-size: 17px;
+    font-weight: 500;
+    color: #e4e4e4;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+}
+
+.form-box .login-register {
+    font-size: 14.5px;
+    font-weight: 500;
+    text-align: center;
+
+    margin-top: 25px;
+}
+
+.login-register p a {
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-register p a:hover {
+    text-decoration: underline;
+}
+
+
+/* Style for user type selection */
+.user-type {
+    margin: 20px 0;
+}
+
+.user-type select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1.5px solid #ffffff;
+    border-radius: 5px;
+    background-color: transparent;
+    color: #ffffff;
+}
+
+.user-type select:focus {
+    outline: none;
+    background-color: #000000;
+    border-color: #ffe59f;
+    color: #ffe59f;
+}

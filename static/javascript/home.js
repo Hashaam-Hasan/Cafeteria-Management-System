@@ -33,3 +33,5 @@ function prevSlide() {
 document.addEventListener('DOMContentLoaded', () => {
   showSlide(currentIndex);
 });
+
+

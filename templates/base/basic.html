@@ -82,6 +82,137 @@
                 box-shadow: 0 0 15px 5px rgba(100, 100, 99, 0.361);
                 border: none;
             }
+
+            .category-offcanva-div {
+                position: relative;
+                height: 100vh;
+                width: 30%;
+                /* padding: 2rem 1rem; */
+                padding-top: 4rem;
+                background-color: black;
+                color: black;
+                z-index: 1040px;
+                position: fixed;
+                left: -1000000px;
+                transition: all 0.5s ease-in-out;
+                /* position: relative; */
+                backdrop-filter: brightness(0.5);
+                color: white;
+                box-shadow: 0 0 15px 5px rgba(100, 100, 99, 0.36)
+
+            }
+
+            
+            .category-offcanva-div h1 {
+                margin-left: 3rem;
+                font-weight: bolder;
+                
+            }
+
+            .category-offcanva-div ul {
+                margin-top: 3rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+
+            .category-offcanva-div ul li {
+                padding: 2rem;
+                list-style: none;
+            }
+
+            .category-offcanva-div ul li a {
+                text-decoration: none;
+                color: white;
+                font-size: 1.5rem;
+                display: block;
+                position: relative;
+                
+            }
+
+
+            .category-offcanva-div ul li a span {
+                
+                position: absolute;
+                width: 10px;
+                height: 10px;
+                background-color: red;
+                left: -20px;
+                top: 30%;
+                transform: rotate(45deg) ;
+                transition: all 0.3s ease-in-out;
+            }
+
+            .category-offcanva-div ul li a:hover span {
+                transform: rotate(360deg);
+            }
+            
+            
+            .category-offcanva-not-active {
+                left: -1000px;
+            }
+
+
+
+            
+
+            .category-offcanva-active {
+                left: 0;
+                
+            }
+
+            
+
+            .arrow-back {
+                position: absolute;
+                right: 20px;
+                top: 8px;
+                cursor: pointer;
+                font-size: 2rem;
+            }
+
+            .modal-backdroP {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: -99;
+                display: none; /* Initially hidden */
+            }
+
+            .category-offcanva-div.category-offcanva-active .modal-backdroP {
+                display: block; /* Show the overlay */
+            }
+
+
+            @media (max-width:1016px) {
+                .category-offcanva-div h1 {
+                    margin-left: 1rem;
+                }
+
+                /* .category-offcanva-div {
+                    width: 81%;
+                } */
+            }
+
+            @media (max-width:859px) {
+                .category-offcanva-div {
+                    width: 40%;
+                }
+            }
+
+            @media (max-width:700px) {
+                .category-offcanva-div {
+                    width: 80%;
+                    
+                }
+            }
+
+
+
     </style>
         
     <div class="container-fluid ps-0 pe-0">        
@@ -119,6 +250,9 @@
                                         <a class="nav-link" href="#">Reserve a Table!</a>
                                     </li>
                                     <li class="nav-item">
+                                        <a class="nav-link catagories-link" href="#">Catagories</a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a class="nav-link" href="#">Contact Us</a>
                                     </li>
                                     
@@ -131,6 +265,29 @@
             </div>
         </div>
         <!-------------------------------NAV BAR END------------------------------------>
+
+        <!----------------------   Category Offcanva Start   ----------------------------- -->
+
+
+        <div class="category-offcanva-div category-offcanva-not-active">
+            <h1>CATAGORIES</h1>
+
+            <ul class="category-offcanva-inner" >
+                <li><a href="">Beverage <span></span></a></li>
+                <li><a href="">Beverage <span></span></a></li>
+                <li><a href="">Beverage <span></span></a></li>
+            </ul>
+            <div class="arrow-back">
+                &#8592;
+            </div>
+            <div class="modal-backdroP"></div>
+
+        </div>
+
+
+
+
+        <!----------------------   Category Offcanva  End ----------------------------- -->
         
     
         {% block content %}{% endblock %}
@@ -225,6 +382,31 @@
         carouselInner.appendChild(div);
     });
 });
+
+
+let cat_menu_offcanva_btn = document.querySelectorAll(".catagories-link")
+
+console.log(cat_menu_offcanva_btn)
+
+cat_menu_offcanva_btn.forEach((cat_btn)=>{
+  console.log(cat_btn)
+  cat_btn.addEventListener(('click'), (e)=>{
+    let cat_offcanva = document.querySelector(".category-offcanva-div")
+    cat_offcanva.classList.remove("category-offcanva-not-active")
+    cat_offcanva.classList.add("category-offcanva-active")
+  })
+})
+
+let arrow_back = document.querySelector(".arrow-back")
+console.log(arrow_back)
+arrow_back.addEventListener(('click'), (e)=>{
+    e.preventDefault();
+    let cat_offcanva = document.querySelector(".category-offcanva-div")
+    cat_offcanva.classList.remove("category-offcanva-active")
+    cat_offcanva.classList.add("category-offcanva-not-active")
+})
+
     </script>
+    <script src="{% static 'javascript/cus_script.js' %}" ></script>
 </body>
 </html>
