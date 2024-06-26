@@ -211,9 +211,9 @@ video {
 
 .container .logreg-box{
     width: calc(100% - 58%);
-    height: 90%;
+    height: 100%;
     position: absolute;
-    top: 20px;
+    top: 1px;
     right: 20px;
     overflow: hidden;
 

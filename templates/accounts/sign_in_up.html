@@ -15,19 +15,17 @@
 <body>
 
     <style>
-       
         body::before {
-
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url('/static/illus/juice.mp4') no-repeat;
-        background-size: cover;
-        filter: blur(10px);
-        z-index: 0;
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('/static/illus/juice.mp4') no-repeat;
+            background-size: cover;
+            filter: blur(10px);
+            z-index: 0;
         }
 
         .input-box input {
@@ -36,13 +34,10 @@
             background: transparent;
             border: none;
             outline: none;
-
-            
             font-size: 19px;
             font-weight: 500;
             color: #ffffff;
             padding-right: 28px;
-        
         }
     </style>
 
@@ -60,27 +55,9 @@
         </form>
     </header>
 
-
-
-
-
-
-
-
-
-
-
     <video autoplay loop muted plays-inline class="back-video">
         <source src="{% static 'illus/coffff.mp4' %}" type="video/mp4">
     </video>
-    
-
-
-
-
-
-
-    
 
     <div class="container">
         <div class="content">
@@ -101,7 +78,7 @@
         <div class="logreg-box">
             <!-- Sign In Form with User Type Selection -->
             <div class="form-box sign-in">
-                <form action="#">
+                <form method="post" action="{% url 'signup' %}">{% csrf_token %}
                     <h2>Sign In</h2>
                     <div class="input-box">
                         <span class="icon"><i class='bx bxs-envelope'></i></span>
@@ -118,8 +95,6 @@
                         <a href="#">Forgot Password?</a>
                     </div>
 
-
-
                     <div class="user-type">
                         <label for="userType">User Type:</label>
                         <select id="userType" name="userType">
@@ -128,16 +103,6 @@
                             <option value="manager">Manager</option>
                         </select>
                     </div>
-
-                    <!-- <div class="user-type">
-                        <select id="userType">
-                            <option value="admin">Admin</option>
-                            <option value="customer">Customer</option>
-                            <option value="manager">Manager</option>
-                        </select>
-                    </div> -->
-
-
 
                     <button type="button" class="btn" id="signInBtn">Sign In</button>
                     <div class="login-register">
@@ -150,16 +115,16 @@
 
             <!-- Admin Form -->
             <div class="form-box admin">
-                <form action="#">
+                <form method="post" action="{% url 'signin' type='admin' %}">{% csrf_token %}
                     <h2>Admin Login</h2>
                     <div class="input-box">
                         <span class="icon"><i class='bx bxs-envelope'></i></span>
-                        <input type="email" required>
+                        <input type="email" name="email" required>
                         <label>Email</label>
                     </div>
                     <div class="input-box">
                         <span class="icon"><i class='bx bx-lock-alt'></i></span>
-                        <input type="password" required>
+                        <input type="password" name="password" required>
                         <label>Password</label>
                     </div>
                     <button type="submit" class="btn">Admin Login</button>
@@ -168,16 +133,16 @@
 
             <!-- Customer Form -->
             <div class="form-box customer">
-                <form action="#">
+                <form method="post" action="{% url 'signin' type='customer' %}">{% csrf_token %}
                     <h2>Customer Login</h2>
                     <div class="input-box">
                         <span class="icon"><i class='bx bxs-envelope'></i></span>
-                        <input type="email" required>
+                        <input type="email" name="email" required>
                         <label>Email</label>
                     </div>
                     <div class="input-box">
                         <span class="icon"><i class='bx bx-lock-alt'></i></span>
-                        <input type="password" required>
+                        <input type="password" name="password" required>
                         <label>Password</label>
                     </div>
                     <button type="submit" class="btn">Customer Login</button>
@@ -186,16 +151,16 @@
 
             <!-- Manager Form -->
             <div class="form-box manager">
-                <form action="#">
+                <form method="post" action="{% url 'signin' type='manager' %}">{% csrf_token %}
                     <h2>Manager Login</h2>
                     <div class="input-box">
                         <span class="icon"><i class='bx bxs-envelope'></i></span>
-                        <input type="email" required>
+                        <input type="email" name="email" required>
                         <label>Email</label>
                     </div>
                     <div class="input-box">
                         <span class="icon"><i class='bx bx-lock-alt'></i></span>
-                        <input type="password" required>
+                        <input type="password" name="password" required>
                         <label>Password</label>
                     </div>
                     <button type="submit" class="btn">Manager Login</button>
@@ -203,46 +168,46 @@
             </div>
 
             <div class="form-box register">
-                <form action="#">
+                <form method="post" action="{% url 'signup' %}">{% csrf_token %}
                     <h2>Sign Up</h2>
 
                     <div class="input-box">
                         <span class="icon"><i class='bx bxs-envelope'></i></span>
-                        <input type="text" required>
+                        <input type="text" name="name" required>
                         <label>Name</label>
                     </div>
 
                     <div class="input-box">
                         <span class="icon"><i class='bx bxs-envelope'></i></span>
-                        <input type="email" required>
+                        <input type="email" name="email" required>
                         <label>Email</label>
+                    </div>
+                    <div class="input-box">
+                        <span class="icon"><i class='bx bxs-envelope'></i></span>
+                        <input type="text" name="f_name" required>
+                        <label>First Name</label>
+                    </div>
+                    <div class="input-box">
+                        <span class="icon"><i class='bx bxs-envelope'></i></span>
+                        <input type="text" name="l_name" required>
+                        <label>Last Name</label>
                     </div>
 
                     <div class="input-box">
                         <span class="icon"><i class='bx bx-lock-alt'></i></span>
-                        <input type="password" required>
+                        <input type="password" name="password" required>
                         <label>Password</label>
                     </div>
 
-                    <div class="remember-forgot">
-                        <label><input type="checkbox">I agree to the terms & conditions</label>
-                    </div>
-
-                    <button type="submit" 
-                    class="btn">Sign Up</button>
+                    <button type="submit" class="btn">Sign Up</button>
 
                     <div class="login-register">
                         <p>Already have an account
                             <a href="#" class="login-link">Sign In</a>
                         </p>
                     </div>
-                    
-
                 </form>
             </div>
-
-
-
         </div>
     </div>
 

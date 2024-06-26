@@ -5,8 +5,11 @@ from .views import *
 
 
 urlpatterns = [
-    path('login', login, name="Login"),
+    path('home/', home, name="home"),
     path('cart/', cart, name="Cart"),
     path('reservation/', reservation, name="Reservation"),
-    path('auth/', signup, name="sign_in_up")
+    path('signup/', signup, name="signup"),
+    #path('signup/<str:type>/', signin, name='signin'),
+    path('signin/<str:type>/', signin, name='signin'),
+    path('signout/', signout, name="signout"),
 ]

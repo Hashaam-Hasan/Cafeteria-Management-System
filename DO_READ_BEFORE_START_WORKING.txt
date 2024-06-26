@@ -11,3 +11,7 @@ You should be in the base directory in which venv folder exist otherwise it will
 2- When you done with your then deactivate it using the:
 	deactivate
 
+3- Test User for Customer 
+	email     -> test@gmail.com
+	password  -> test
+
