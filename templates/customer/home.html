@@ -216,7 +216,7 @@
 <div class="reserve-table-section-new">
     <div class="reserve-content">
         <h2>Reserve A Table!</h2>
-        <a href="">Reserve</a>
+        <a href="{% url 'Reservation' %}">Reserve</a>
         <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eligendi corrupti accusamus repellendus quis sit, iure ut dolorum, numquam iste, nemo doloribus! Soluta ea incidunt impedit quibusdam velit sed animi aliquid!</p>
     </div>
     <div class="reserve-img">
@@ -238,6 +238,25 @@
             <div class="carousel-inner" id="carousel-inner">
                 
                 <!-- Cards will be inserted here dynamically -->
+                {% for category in categories %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="card text-center mx-auto">
+                        <img src="{{ category.category_image.url }}" class="card-img-top" alt="{{ category.category_name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ category.category_name }}</h5>
+                            <p class="card-text">{{ category.category_description }}</p>
+                            <div class="card-icon">
+                                <a href="#">
+                                    <button type="button" class="btn btn-outline-primary" style="width:25%; color: black; border-color: black; border-radius: 15px;">Go!</button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            {% endfor %}
+
+                 
 
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#categoryCarousel" data-bs-slide="prev">

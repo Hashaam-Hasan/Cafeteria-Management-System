@@ -204,6 +204,16 @@ video {
 }
 
 
+.popup-error {
+    
+    width: 350px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
 
 
 /* Sign In Sign Up ki Field -----------------------------------------------------------------*/

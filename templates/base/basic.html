@@ -250,13 +250,13 @@
                             <div class="offcanvas-body">
                                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                                     <li class="nav-item">
-                                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                                        <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#">Cart</a>
+                                        <a class="nav-link" href="{% url 'Cart' %}">Cart</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#">Reserve a Table!</a>
+                                        <a class="nav-link" href="{% url 'Reservation' %}">Reserve a Table!</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link catagories-link" href="#">Catagories</a>
@@ -319,7 +319,7 @@
                         <div class="col-md-4">
                           <h6>Quick Links</h6>
                           <ul class="list-unstyled">
-                            <li><a href="#">Home</a></li>
+                            <li><a href="{% url 'home' %}">Home</a></li>
                             <li><a href="#">About Us</a></li>
                             <li><a href="#">Contact</a></li>
                           </ul>
@@ -359,61 +359,41 @@
     <script src="{% static 'javascript/home.js' %}"></script>
      <!-- Zobo Javascript -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-    const categories = [
-        { name: 'Pastries', text: 'Delicious pastries to satisfy your sweet tooth.', icon: '{% static "icons/pastry-icon.svg" %}', image: '{% static "images/customer_images/cover.jpg" %}' },
-        { name: 'Desserts', text: 'Sweet and savory desserts to end your meal.', icon: '{% static "icons/dessert-icon.svg" %}', image: '{% static "images/customer_images/cat-dessert.jpeg" %}' },
-        { name: 'Coffee and Tea', text: 'Savor the best in coffee and tea, any time of day', icon: '{% static "icons/coffee-icon.svg" %}', image: '{% static "images/customer_images/cat-tea.jpg" %}' },
-        { name: 'Beverages', text: 'Refreshing drinks to quench your thirst.', icon: '{% static "icons/beverage-icon.svg" %}', image: '{% static "images/customer_images/cat-bev.jpeg" %}' },
-        { name: 'Breakfast', text: 'Enjoy a hearty breakfast to fuel your day.', icon: '{% static "icons/breakfast-icon.svg" %}', image: '{% static "images/customer_images/cat-bf.jpg" %}' },
-        { name: 'Lunch', text: 'Delicious lunch meals for your afternoon break.', icon: '{% static "icons/lunch-icon.svg" %}', image: '{% static "images/customer_images/cat-lunch.jpg" %}' },
-        { name: 'Soups', text: 'Indulge in our variety of fresh, tasty soups.', icon: '{% static "icons/soup-icon.svg" %}', image: '{% static "images/customer_images/cat-soup.jpg" %}' }
-    ];
+//         document.addEventListener('DOMContentLoaded', function () {
+//     const categories = [
+//         { name: 'Pastries', text: 'Delicious pastries to satisfy your sweet tooth.', icon: '{% static "icons/pastry-icon.svg" %}', image: '{% static "images/customer_images/cover.jpg" %}' },
+//         { name: 'Desserts', text: 'Sweet and savory desserts to end your meal.', icon: '{% static "icons/dessert-icon.svg" %}', image: '{% static "images/customer_images/cat-dessert.jpeg" %}' },
+//         { name: 'Coffee and Tea', text: 'Savor the best in coffee and tea, any time of day', icon: '{% static "icons/coffee-icon.svg" %}', image: '{% static "images/customer_images/cat-tea.jpg" %}' },
+//         { name: 'Beverages', text: 'Refreshing drinks to quench your thirst.', icon: '{% static "icons/beverage-icon.svg" %}', image: '{% static "images/customer_images/cat-bev.jpeg" %}' },
+//         { name: 'Breakfast', text: 'Enjoy a hearty breakfast to fuel your day.', icon: '{% static "icons/breakfast-icon.svg" %}', image: '{% static "images/customer_images/cat-bf.jpg" %}' },
+//         { name: 'Lunch', text: 'Delicious lunch meals for your afternoon break.', icon: '{% static "icons/lunch-icon.svg" %}', image: '{% static "images/customer_images/cat-lunch.jpg" %}' },
+//         { name: 'Soups', text: 'Indulge in our variety of fresh, tasty soups.', icon: '{% static "icons/soup-icon.svg" %}', image: '{% static "images/customer_images/cat-soup.jpg" %}' }
+//     ];
 
-    const carouselInner = document.getElementById('carousel-inner');
+//     const carouselInner = document.getElementById('carousel-inner');
 
-    categories.forEach((category, index) => {
-        const div = document.createElement('div');
-        div.className = `carousel-item ${index === 0 ? 'active' : ''}`;
-        div.innerHTML = `
-            <div class="card text-center mx-auto">
-                <img src="${category.image}" class="card-img-top" alt="${category.name}">
-                <div class="card-body">
-                    <h5 class="card-title">${category.name}</h5>
-                    <p class="card-text">${category.text}</p>
-                    <div class="card-icon">
-                        <button type="button" class="btn btn-outline-primary" style = "width:25%; color: black; border-color: black; border-radius: 15px;">Go!</button>
+//     categories.forEach((category, index) => {
+//         const div = document.createElement('div');
+//         div.className = `carousel-item ${index === 0 ? 'active' : ''}`;
+//         div.innerHTML = `
+//             <div class="card text-center mx-auto">
+//                 <img src="${category.image}" class="card-img-top" alt="${category.name}">
+//                 <div class="card-body">
+//                     <h5 class="card-title">${category.name}</h5>
+//                     <p class="card-text">${category.text}</p>
+//                     <div class="card-icon">
+//                         <button type="button" class="btn btn-outline-primary" style = "width:25%; color: black; border-color: black; border-radius: 15px;">Go!</button>
                         
-                    </div>
-                </div>
-            </div>
-        `;
-        carouselInner.appendChild(div);
-    });
-});
+//                     </div>
+//                 </div>
+//             </div>
+//         `;
+//         carouselInner.appendChild(div);
+//     });
+// });
 
 
-let cat_menu_offcanva_btn = document.querySelectorAll(".catagories-link")
 
-console.log(cat_menu_offcanva_btn)
-
-cat_menu_offcanva_btn.forEach((cat_btn)=>{
-  console.log(cat_btn)
-  cat_btn.addEventListener(('click'), (e)=>{
-    let cat_offcanva = document.querySelector(".category-offcanva-div")
-    cat_offcanva.classList.remove("category-offcanva-not-active")
-    cat_offcanva.classList.add("category-offcanva-active")
-  })
-})
-
-let arrow_back = document.querySelector(".arrow-back")
-console.log(arrow_back)
-arrow_back.addEventListener(('click'), (e)=>{
-    e.preventDefault();
-    let cat_offcanva = document.querySelector(".category-offcanva-div")
-    cat_offcanva.classList.remove("category-offcanva-active")
-    cat_offcanva.classList.add("category-offcanva-not-active")
-})
 
     </script>
     <script src="{% static 'javascript/cus_script.js' %}" ></script>

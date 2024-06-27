@@ -76,20 +76,26 @@ def signin(request, *args, **kwargs):
             elif sign_in_type.lower() == 'manager':
                 pass
         else:
-            return render(request, 'accounts/sign_in_up.html', {'error': 'Authentication failed'})
+            return render(request, 'accounts/sign_in_up.html', {'error': 'Invalid-Credentials'})
     return render(request, 'accounts/sign_in_up.html')
 
 def signout(request):
 
     #logout the user from the session
     logout(request)
-    return redirect('home')
+    return redirect('signup')
 
 
 ###################################  Customer ###################################
 
 def home(request, *args, **kwargs):
-    return render(request, 'customer/home.html')
+    if request.user.is_superuser:
+        logout(request)
+        return redirect('home')
+
+    categories = Category.objects.all()  # Corrected variable name to 'categories'
+    context = {'categories': categories}
+    return render(request, 'customer/home.html', context)
 
 
 def cart(request):
