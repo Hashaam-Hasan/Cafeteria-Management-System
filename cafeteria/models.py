@@ -95,6 +95,7 @@ class Reservation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     slot = models.ForeignKey(Slot, on_delete=models.SET_NULL, null=True, blank=True)
     table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True, blank=True)
+    is_reserve = models.BooleanField(default=False)
 
     def __str__(self):
         return self.reservation_date + ": " + self.user.email

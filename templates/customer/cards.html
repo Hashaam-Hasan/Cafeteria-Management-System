@@ -4,7 +4,7 @@
 {% block extra_css %}
     {% include 'base/extra_links.html' %}
     <link rel="stylesheet" href="{% static 'customer_css/card_css.css' %}">
-    <!-- <link rel="stylesheet" href="{% static 'customer_css/home.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'customer_css/home.css' %}">
 {% endblock %}
 
 
@@ -35,32 +35,49 @@
         }
         #cards{
             border: none;
-            padding: 10px;
+            padding: 50px;
             /* margin: 5px; */
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 20px;
+            gap: 40px;
             margin-top: 10rem;
             /* backdrop-filter: blur(20px); */
 
         }
+
+        #card-inner {
+            backdrop-filter: blur(20px);
+            /* background-color: cornsilk; */
+            background-color: rgb(241, 241, 173);
+            padding: 0;
+        }
+
+        #card-inner img {
+            width: 100%;
+            /* height: 241px; */
+            object-fit: cover;
+        }
+
+        /* .card {
+            backdrop-filter: blur(10px);
+        } */
 </style>
 
-<section id="cards" class="ro">
-    <div class="card col-6 col-md-4 col-sm-8" style="width: 18rem;">
-        <img src="{% static 'images/customer_images/download.jpeg' %}" class="card-img-top" alt="..." >
+<section id="cards" class="row">
+    {% for menu in menus %}
+    <div class="card col-6 col-md-4 col-sm-8" style="width: 18rem; height: 32rem;" id="card-inner">
+        <img src="{{menu.menu_image.url}}" class="card-img-top" alt="..."  >
         <div class="card-body">
-            <h5 class="card-title">Pancake</h5>
+            <h5 class="card-title">{{menu.menu_name}}</h5>
             <hr>
             <p class="card-text">
-                A pancake is a thin, flat, round cake made from a batter and cooked on a hot griddle or frying pan.
-                Here are some key details about pancakes<br><a href="#" class="card-link">Read more</a>
-                <p class="price">Price: $150</p></p>
+                
+                <p class="price">Price: ${{menu.price}}</p></p>
 
-            <a href="#" class="btn btn-danger">View item</a>
-            <a href="#" class="btn btn-danger">Add to Cart</a>
+            <a href="#" class="btn btn-danger p-3">View item</a>
+            <a href="#" class="btn btn-danger p-3">Add to Cart</a>
 
             <div class="star">
                 <input type="radio" id="r1-1" name="rating1">
@@ -76,223 +93,10 @@
             </div>
         </div>
     </div>
-    <div class="card col-6 col-md-4 col-sm-8" style="width: 18rem;">
-        <img src="{% static 'images/customer_images/download.jpeg' %}" class="card-img-top" alt="..." >
-        <div class="card-body">
-            <h5 class="card-title">Pancake</h5>
-            <hr>
-            <p class="card-text">
-                A pancake is a thin, flat, round cake made from a batter and cooked on a hot griddle or frying pan.
-                Here are some key details about pancakes<br><a href="#" class="card-link">Read more</a>
-                <p class="price">Price: $150</p></p>
+    {% endfor %}
 
-            <a href="#" class="btn btn-danger">View item</a>
-            <a href="#" class="btn btn-danger">Add to Cart</a>
-
-            <div class="star">
-                <input type="radio" id="r1-1" name="rating1">
-                <label for="r1-1"></label>
-                <input type="radio" id="r2-1" name="rating1">
-                <label for="r2-1"></label>
-                <input type="radio" id="r3-1" name="rating1">
-                <label for="r3-1"></label>
-                <input type="radio" id="r4-1" name="rating1">
-                <label for="r4-1"></label>
-                <input type="radio" id="r5-1" name="rating1">
-                <label for="r5-1"></label>
-            </div>
-        </div>
-    </div>
-    <div class="card col-6 col-md-4 col-sm-8" style="width: 18rem;">
-        <img src="{% static 'images/customer_images/download.jpeg' %}" class="card-img-top" alt="..." >
-        <div class="card-body">
-            <h5 class="card-title">Pancake</h5>
-            <hr>
-            <p class="card-text">
-                A pancake is a thin, flat, round cake made from a batter and cooked on a hot griddle or frying pan.
-                Here are some key details about pancakes<br><a href="#" class="card-link">Read more</a>
-                <p class="price">Price: $150</p></p>
-
-            <a href="#" class="btn btn-danger">View item</a>
-            <a href="#" class="btn btn-danger">Add to Cart</a>
-
-            <div class="star">
-                <input type="radio" id="r1-1" name="rating1">
-                <label for="r1-1"></label>
-                <input type="radio" id="r2-1" name="rating1">
-                <label for="r2-1"></label>
-                <input type="radio" id="r3-1" name="rating1">
-                <label for="r3-1"></label>
-                <input type="radio" id="r4-1" name="rating1">
-                <label for="r4-1"></label>
-                <input type="radio" id="r5-1" name="rating1">
-                <label for="r5-1"></label>
-            </div>
-        </div>
-    </div>
-    <div class="card col-6 col-md-4 col-sm-8" style="width: 18rem;">
-        <img src="{% static 'images/customer_images/download.jpeg' %}" class="card-img-top" alt="..." >
-        <div class="card-body">
-            <h5 class="card-title">Pancake</h5>
-            <hr>
-            <p class="card-text">
-                A pancake is a thin, flat, round cake made from a batter and cooked on a hot griddle or frying pan.
-                Here are some key details about pancakes<br><a href="#" class="card-link">Read more</a>
-                <p class="price">Price: $150</p></p>
-
-            <a href="#" class="btn btn-danger">View item</a>
-            <a href="#" class="btn btn-danger">Add to Cart</a>
-
-            <div class="star">
-                <input type="radio" id="r1-1" name="rating1">
-                <label for="r1-1"></label>
-                <input type="radio" id="r2-1" name="rating1">
-                <label for="r2-1"></label>
-                <input type="radio" id="r3-1" name="rating1">
-                <label for="r3-1"></label>
-                <input type="radio" id="r4-1" name="rating1">
-                <label for="r4-1"></label>
-                <input type="radio" id="r5-1" name="rating1">
-                <label for="r5-1"></label>
-            </div>
-        </div>
-    </div>
-    <div class="card col-6 col-md-4 col-sm-8" style="width: 18rem;">
-        <img src="{% static 'images/customer_images/download.jpeg' %}" class="card-img-top" alt="..." >
-        <div class="card-body">
-            <h5 class="card-title">Pancake</h5>
-            <hr>
-            <p class="card-text">
-                A pancake is a thin, flat, round cake made from a batter and cooked on a hot griddle or frying pan.
-                Here are some key details about pancakes<br><a href="#" class="card-link">Read more</a>
-                <p class="price">Price: $150</p></p>
-
-            <a href="#" class="btn btn-danger">View item</a>
-            <a href="#" class="btn btn-danger">Add to Cart</a>
-
-            <div class="star">
-                <input type="radio" id="r1-1" name="rating1">
-                <label for="r1-1"></label>
-                <input type="radio" id="r2-1" name="rating1">
-                <label for="r2-1"></label>
-                <input type="radio" id="r3-1" name="rating1">
-                <label for="r3-1"></label>
-                <input type="radio" id="r4-1" name="rating1">
-                <label for="r4-1"></label>
-                <input type="radio" id="r5-1" name="rating1">
-                <label for="r5-1"></label>
-            </div>
-        </div>
-    </div>
-    <div class="card col-6 col-md-4 col-sm-8" style="width: 18rem;">
-        <img src="{% static 'images/customer_images/download.jpeg' %}" class="card-img-top" alt="..." >
-        <div class="card-body">
-            <h5 class="card-title">Pancake</h5>
-            <hr>
-            <p class="card-text">
-                A pancake is a thin, flat, round cake made from a batter and cooked on a hot griddle or frying pan.
-                Here are some key details about pancakes<br><a href="#" class="card-link">Read more</a>
-                <p class="price">Price: $150</p></p>
-
-            <a href="#" class="btn btn-danger">View item</a>
-            <a href="#" class="btn btn-danger">Add to Cart</a>
-
-            <div class="star">
-                <input type="radio" id="r1-1" name="rating1">
-                <label for="r1-1"></label>
-                <input type="radio" id="r2-1" name="rating1">
-                <label for="r2-1"></label>
-                <input type="radio" id="r3-1" name="rating1">
-                <label for="r3-1"></label>
-                <input type="radio" id="r4-1" name="rating1">
-                <label for="r4-1"></label>
-                <input type="radio" id="r5-1" name="rating1">
-                <label for="r5-1"></label>
-            </div>
-        </div>
-    </div>
-    <div class="card col-6 col-md-4 col-sm-8" style="width: 18rem;">
-        <img src="{% static 'images/customer_images/download.jpeg' %}" class="card-img-top" alt="..." >
-        <div class="card-body">
-            <h5 class="card-title">Pancake</h5>
-            <hr>
-            <p class="card-text">
-                A pancake is a thin, flat, round cake made from a batter and cooked on a hot griddle or frying pan.
-                Here are some key details about pancakes<br><a href="#" class="card-link">Read more</a>
-                <p class="price">Price: $150</p></p>
-
-            <a href="#" class="btn btn-danger">View item</a>
-            <a href="#" class="btn btn-danger">Add to Cart</a>
-
-            <div class="star">
-                <input type="radio" id="r1-1" name="rating1">
-                <label for="r1-1"></label>
-                <input type="radio" id="r2-1" name="rating1">
-                <label for="r2-1"></label>
-                <input type="radio" id="r3-1" name="rating1">
-                <label for="r3-1"></label>
-                <input type="radio" id="r4-1" name="rating1">
-                <label for="r4-1"></label>
-                <input type="radio" id="r5-1" name="rating1">
-                <label for="r5-1"></label>
-            </div>
-        </div>
-    </div>
-    <div class="card col-6 col-md-4 col-sm-8" style="width: 18rem;">
-        <img src="{% static 'images/customer_images/download.jpeg' %}" class="card-img-top" alt="..." >
-        <div class="card-body">
-            <h5 class="card-title">Pancake</h5>
-            <hr>
-            <p class="card-text">
-                A pancake is a thin, flat, round cake made from a batter and cooked on a hot griddle or frying pan.
-                Here are some key details about pancakes<br><a href="#" class="card-link">Read more</a>
-                <p class="price">Price: $150</p></p>
-
-            <a href="#" class="btn btn-danger">View item</a>
-            <a href="#" class="btn btn-danger">Add to Cart</a>
-
-            <div class="star">
-                <input type="radio" id="r1-1" name="rating1">
-                <label for="r1-1"></label>
-                <input type="radio" id="r2-1" name="rating1">
-                <label for="r2-1"></label>
-                <input type="radio" id="r3-1" name="rating1">
-                <label for="r3-1"></label>
-                <input type="radio" id="r4-1" name="rating1">
-                <label for="r4-1"></label>
-                <input type="radio" id="r5-1" name="rating1">
-                <label for="r5-1"></label>
-            </div>
-        </div>
-    </div>
-    <div class="card col-6 col-md-4 col-sm-8" style="width: 18rem;">
-        <img src="{% static 'images/customer_images/download.jpeg' %}" class="card-img-top" alt="..." >
-        <div class="card-body">
-            <h5 class="card-title">Pancake</h5>
-            <hr>
-            <p class="card-text">
-                A pancake is a thin, flat, round cake made from a batter and cooked on a hot griddle or frying pan.
-                Here are some key details about pancakes<br><a href="#" class="card-link">Read more</a>
-                <p class="price">Price: $150</p></p>
-
-            <a href="#" class="btn btn-danger">View item</a>
-            <a href="#" class="btn btn-danger">Add to Cart</a>
-
-            <div class="star">
-                <input type="radio" id="r1-1" name="rating1">
-                <label for="r1-1"></label>
-                <input type="radio" id="r2-1" name="rating1">
-                <label for="r2-1"></label>
-                <input type="radio" id="r3-1" name="rating1">
-                <label for="r3-1"></label>
-                <input type="radio" id="r4-1" name="rating1">
-                <label for="r4-1"></label>
-                <input type="radio" id="r5-1" name="rating1">
-                <label for="r5-1"></label>
-            </div>
-        </div>
-    </div>
-
+    
+    
 
 
 

@@ -1,5 +1,6 @@
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function(e) {
+    e.preventDefault();
     const navbar = document.getElementById('navbar');
     const login_btn = document.getElementById('login-btn');
     window.addEventListener('scroll', function() {

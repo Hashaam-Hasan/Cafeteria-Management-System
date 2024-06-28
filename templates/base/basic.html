@@ -100,7 +100,7 @@
                 left: -1000000px;
                 transition: all 0.5s ease-in-out;
                 /* position: relative; */
-                backdrop-filter: brightness(0.5);
+                /* backdrop-filter: brightness(0.5); */
                 color: white;
                 box-shadow: 0 0 15px 5px rgba(100, 100, 99, 0.36);
                 overflow-x: hidden;
@@ -304,7 +304,7 @@
 
             <ul class="category-offcanva-inner" >
                 {% for category in categories %}
-                <li><a href="">{{category.category_name}} <span></span></a></li>
+                <li><a href="{% url 'categories-cards' category_name=category.category_name %}">{{category.category_name}} <span></span></a></li>
                 {% endfor %}
                 
             </ul>

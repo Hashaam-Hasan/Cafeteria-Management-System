@@ -12,5 +12,5 @@ urlpatterns = [
     #path('signup/<str:type>/', signin, name='signin'),
     path('signin/<str:type>/', signin, name='signin'),
     path('signout/', signout, name="signout"),
-    path('categories-cards/', categories_card, name="categories-cards"),
+    path('categories-cards/<str:category_name>', categories_card, name="categories-cards"),
 ]

@@ -108,5 +108,18 @@ def reservation(request):
 
 
 def categories_card(request, *args, **kwargs):
-    return render(request, 'customer/cards.html')
+
+    category_name = kwargs['category_name']  #{key: value}
+
+    category = Category.objects.get(category_name=category_name)
+    
+    categories = Category.objects.all()
+
+    menu_items = MenuItem.objects.filter(catagory=category.id)
+    
+    context = {'menus': menu_items, 'categories': categories}
+
+
+
+    return render(request, 'customer/cards.html', context)
 

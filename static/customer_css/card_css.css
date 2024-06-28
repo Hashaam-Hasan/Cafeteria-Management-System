@@ -1,6 +1,6 @@
 #cards{
     /* border: 1px solid blue; */
-    padding: 10px;
+    padding: 50px;
     /* margin: 5px; */
     display: flex;
     flex-wrap: wrap;
@@ -18,7 +18,8 @@
     font-weight: 700;
     font-style: normal;
     font-size: 18px;
-    color: rgb(45, 46, 47);
+    /* color: rgb(45, 46, 47); */
+    color: white;
     margin: 0px 0px -8px;
   }
 
@@ -37,7 +38,8 @@
 .card-body > .price{
     font-family: "Poppins", sans-serif;
     font-weight: 700;
-    color: rgb(100, 92, 92);
+    /* color: rgb(100, 92, 92); */
+    color: white;
 
 
 
@@ -46,10 +48,7 @@
 .card-body >a{
     font-family: "Poppins", sans-serif;
     font-size: 0.7em;
-    padding: 6px var(--bs-card-spacer-x);;
-
-
-
+    padding: 6px var(--bs-card-spacer-x);
 }
 
   
