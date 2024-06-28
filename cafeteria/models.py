@@ -90,7 +90,7 @@ class Table(models.Model):
     is_table = models.BooleanField(default=True)
 
 class Reservation(models.Model):
-    reservation_date = models.DateTimeField(auto_now_add=True)
+    reservation_date = models.DateTimeField()
     no_of_guests = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     slot = models.ForeignKey(Slot, on_delete=models.SET_NULL, null=True, blank=True)
