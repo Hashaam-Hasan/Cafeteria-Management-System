@@ -1,0 +1,255 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.CardDescription{
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    height: 100vh;
+    border: 2px solid orange;
+    flex-wrap: wrap;
+    
+}
+.LeftCardDescription{
+    width: 40vw;
+    min-width: 400px;
+    padding:75px 25px;
+    margin: 15px 15px;
+    background-color: rgb(241, 236, 224);
+    height: 74vh;
+    text-align: center;
+    
+
+}
+.RightCardDescription{
+    width: 40vw;
+    min-width: 400px;
+    height: 100%;
+    padding: 4px 40px;
+    margin: 0px 15px;
+
+}
+
+.Price{
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: rgb(78, 77, 77);
+    padding: 6px;
+    margin: 3px 0px;
+
+}
+.RecipeName{
+    font-weight: 600;
+    font-size: 2rem;
+    color: black;
+    padding: 4px;
+    margin: 5px 0px;
+
+}
+
+
+.Ratings{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: rgb(75, 74, 74);
+
+}
+.Stars {
+    display: flex;
+    flex-direction: row;
+}
+
+.star {
+    width: 1em;
+    height: 1em;
+    background-color: rgb(177, 174, 174);
+    clip-path: polygon(
+        50% 0%,
+        61% 35%,
+        98% 35%,
+        68% 57%,
+        79% 91%,
+        50% 70%,
+        21% 91%,
+        32% 57%,
+        2% 35%,
+        39% 35%
+    );
+    margin: 2px;
+}
+
+.filled {
+    background-color: gold;
+}
+
+
+.RecipeDescription{
+    font-size: 0.9rem;
+    padding: 6px ;
+    margin: 4px 0px 6px 0px;
+    color: rgb(82, 79, 79);
+
+}
+.Availability{
+    padding: 10px;
+    margin: 8px 0px;
+    display: flex;
+    align-items: center;
+}
+.Availability img{
+    width: 1rem;
+    height: 1rem;
+    color: black;
+    margin: 0px 6px 0px 20px;
+   
+}
+.Availability span:nth-of-type(2){
+    font-size: 0.8rem;
+   
+}
+.Info{
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    gap: 2rem;
+}
+
+.TimeInfo , .IngredientsInfo , .ServingInfo{
+    width: 5rem;
+    height: 3.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    /* gap: 5px; */
+
+
+}
+
+
+.TimeInfo img , .IngredientsInfo img , .ServingInfo img{
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-top: 4px;
+    
+}
+.TimeInfo span:nth-of-type(2) , .IngredientsInfo span:nth-of-type(2) , .ServingInfo span:nth-of-type(2){
+    color: black;
+    margin-left: 2px;
+
+    padding: 2px;
+
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: rgb(250, 133, 7);
+}
+.TimeInfo div:nth-of-type(1) , .IngredientsInfo div:nth-of-type(1), .ServingInfo div:nth-of-type(1){
+    font-size:0.9rem;
+    font-weight: 600;
+   
+}
+
+
+.FavIcon{
+    width: 1rem;
+    height: 1rem;
+    /* fill: red; */
+    /* border: 1px solid white; */
+    /* background-color: red; */
+    /* color: red; */
+
+}
+.FavIconBox{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* border: 1px solid black; */
+    height: 100%;
+    width: 2.6rem;
+    background-color: rgb(250, 133, 7);
+}
+
+
+
+
+
+
+
+
+.AddToCardCount{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 7%;
+   
+    margin: 12px 0px;
+
+}
+
+
+.AddToCardCount > input{
+    width: 10%;
+    height:100% ;
+    text-align: center;
+
+}
+
+
+.Counters {
+    width: 10%;
+    height: 100%;
+    border: 1px solid rgb(107, 106, 106);
+}
+
+#increment, #decrement {
+    width: 100%;
+    height: 50%;
+    font-size: 1rem;
+    font-weight: bolder;
+    border: none;
+    background-color: white;
+    transition: ease-in-out 0.18s;
+}
+
+#increment:hover, #decrement:hover{
+    background-color: rgb(250, 133, 7);
+    color: white;
+    transform: scale(1.05);
+}
+
+
+
+#add_to_cart{
+    font-size: 0.8rem;
+    /* font-weight: 600; */
+    height: 100%;
+    width: 24%;
+    background-color: transparent;
+    text-align: center;
+    margin: 0px 20px;
+    background-color:rgb(250, 133, 7);
+    color: white;
+    border: none;
+    
+}
+
+
+#add_to_cart:hover ,.FavIconBox:hover{
+    transition: ease-in-out 0.5s;
+    transform: scale(1.05);
+    color: white;
+    background-color: black;
+    
+}
+
+
+.SkuWrapper{
+    padding: 4px 0px;
+    margin: 4px 0px;
+}

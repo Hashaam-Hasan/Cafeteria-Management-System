@@ -13,7 +13,7 @@ body {
     justify-content: center;
     align-items: center;
     background: url("{% static 'images/customer_images/cover.jpg' %}") no-repeat;
-    background-color: cadetblue;
+    /* background-color: cadetblue; */
     background-size: cover;
     position: relative;
 }

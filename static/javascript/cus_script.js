@@ -47,12 +47,4 @@ function increaseQuantity(button) {
 //   }
 
 
-// Catagory offcanva
 
-let cat_menu_offcanva_btn = document.querySelectorAll(".catagories-link")
-
-console.log(cat_menu_offcanva_btn)
-
-cat_menu_offcanva_btn.forEach((cat_btn)=>{
-  console.log(cat_btn)
-})

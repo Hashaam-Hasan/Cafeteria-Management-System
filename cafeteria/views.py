@@ -21,7 +21,8 @@ def signup(request):
         last_name = request.POST.get('l_name')
         password = request.POST.get('password')
 
-
+        if User.objects.filter(email=email).exists:
+            return render(request, 'accounts/sign_in_up.html', {'error': 'Email Exists'})
         #Trying to get the latest user id in order to make new custom id for customer
         #Format CUS****
         try:
@@ -30,7 +31,7 @@ def signup(request):
             val = last_id[3:]
             val = str(int(val) + 1).zfill(4)  # Ensure the ID remains 4 digits
         except ObjectDoesNotExist:
-            val = "00001"  # Starting value for the first user
+            val = "0001"  # Starting value for the first user
         
         customer_id = "CUS" + val
 
@@ -54,7 +55,7 @@ def signup(request):
     return render(request, 'accounts/sign_in_up.html')
 
 def signin(request, *args, **kwargs):
-
+#('manager')
     if request.method == "POST":
 
         #Getting Values from Forms
@@ -89,6 +90,7 @@ def signout(request):
 ###################################  Customer ###################################
 
 def home(request, *args, **kwargs):
+    
     if request.user.is_superuser:
         logout(request)
         return redirect('home')
@@ -103,4 +105,8 @@ def cart(request):
 
 def reservation(request):
     return render(request, 'customer/reservation.html')
+
+
+def categories_card(request, *args, **kwargs):
+    return render(request, 'customer/cards.html')
 
