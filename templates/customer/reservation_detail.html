@@ -1,0 +1,138 @@
+{% extends 'base/basic.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'customer_css/home.css' %}">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+{% endblock %}
+
+{% block content %}
+<style>
+
+    body {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                background: url("/static/images/customer_images/cover.jpg") no-repeat;
+                background-size: cover;
+                
+            }
+
+            body::before{
+                backdrop-filter: none;
+            }
+
+    .table-container {
+        height: 100%;
+        margin: 5rem 4rem;
+        margin-top: 10rem;
+        background-color: #984513;
+        padding: 2rem;
+        
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    table, th, td {
+        border: 1px solid black;
+    }
+    th, td {
+        padding: 10px;
+        text-align: left;
+        background-color: #2e2d2d;
+    color: white;
+    }
+    th {
+        background-color: #222121;
+        color: white;
+    }
+
+    .search-container {
+            margin-bottom: 20px;
+        }
+        .search-container input[type="date"], .search-container button {
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 16px;
+        }
+        .search-container button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .search-container button:hover {
+            background-color: #45a049;
+        }
+</style>
+
+
+    <div class="table-container">
+        <h1 style="font-weight: bolder;">Reserved Table</h1>
+        <div class="search-container" id="search-form">
+            <form action="/search" method="get">{% csrf_token %}
+                <input type="date" id="reservation_date" name="reservation_date">
+                <button type="submit"><i class="fas fa-search"></i> Search</button>
+            </form>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Table No</th>
+                    <th>Reservation Date</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Reserve</th>
+                </tr>
+            </thead>
+            <tbody id="reservationTableBody">
+                
+                
+                
+                <!-- Add more reservation rows as needed -->
+            </tbody>
+        </table>
+    </div>
+
+<script>
+document.getElementById('search-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const date = document.getElementById('reservation_date').value;
+            
+            fetch(`/search?reservation_date=${date}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('reservationTableBody');
+                    tableBody.innerHTML = '';
+                    console.log(data.reservations.length);
+                    if (data.reservations.length > 0) {
+                            data.reservations.forEach(reservation => {
+                                const row = document.createElement('tr');
+
+                                row.innerHTML = `
+                                    <td>${reservation.id}</td>
+                                    <td>${reservation.reservation_date}</td>
+                                    <td>${reservation.start_time}</td>
+                                    <td>${reservation.end_time}</td>
+                                    <td><i class="fas fa-check"></i></td>
+                                `;
+
+                                tableBody.appendChild(row);
+                            });
+                    }
+                    else {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `No Table Is Reserve On This Day`
+                        tableBody.appendChild(row);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+
+
+</script>
+
+{% endblock %}

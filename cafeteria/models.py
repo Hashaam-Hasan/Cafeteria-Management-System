@@ -79,18 +79,18 @@ class OrderItem(models.Model):
         return self.order_item_name
 
 class Slot(models.Model):
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
 
     def __str__(self):
-        return str(self.start_time) + "--" + str(end_time)
+        return str(self.start_time) + "--" + str(self.end_time)
 
 class Table(models.Model):
     capacity = models.IntegerField()
     is_table = models.BooleanField(default=True)
 
 class Reservation(models.Model):
-    reservation_date = models.DateTimeField()
+    reservation_date = models.DateField()
     no_of_guests = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     slot = models.ForeignKey(Slot, on_delete=models.SET_NULL, null=True, blank=True)
@@ -98,6 +98,6 @@ class Reservation(models.Model):
     is_reserve = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.reservation_date + ": " + self.user.email
+        return str(self.reservation_date) + ": " + self.user.email
 
 

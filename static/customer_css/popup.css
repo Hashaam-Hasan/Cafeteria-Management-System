@@ -1,0 +1,51 @@
+.popup-error {
+    position: absolute;
+   width: 100vw;
+height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 11111;
+backdrop-filter: blur(10px);
+color: black;
+/* top: 50%;
+left: 50%;
+right: 50%;
+bottom: 50%; */
+
+left: 0;
+
+}
+
+.active-popup {
+left:0;
+}
+
+.not-active-popup {
+left: -10000000px;
+}
+
+
+.popup-inner {
+background-color: rgba(138, 103, 33, 0.578);
+color: rgb(221, 190, 106);
+width: 350px;
+height: 150px;
+display: flex;
+justify-content: center;
+align-items: center;
+position: relative;
+transition: all 0.5s ease;
+}
+
+.bx-x-circle {
+position: absolute;
+top: 10px;
+left: 10px;
+font-size: 2rem;
+cursor: pointer;
+}
+
+.bx-x-circle:hover {
+scale: 1.2;
+}

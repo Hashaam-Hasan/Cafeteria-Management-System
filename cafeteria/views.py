@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User as AuthUser
 from django.contrib.auth import login, authenticate, logout
+from django.http import JsonResponse
 from .models import *
 
 
@@ -21,7 +22,7 @@ def signup(request):
         last_name = request.POST.get('l_name')
         password = request.POST.get('password')
 
-        if User.objects.filter(email=email).exists:
+        if User.objects.filter(email=email).exists():
             return render(request, 'accounts/sign_in_up.html', {'error': 'Email Exists'})
         #Trying to get the latest user id in order to make new custom id for customer
         #Format CUS****
@@ -104,22 +105,52 @@ def cart(request):
     return render(request, 'customer/cart.html')
 
 def reservation(request):
-    return render(request, 'customer/reservation.html')
+    slots = Slot.objects.all()
+    tables = Table.objects.all()
+    context = {"slots": slots, "tables": tables}
 
+    if request.method == "POST":
+        date = request.POST.get('date')
+        table = request.POST.get('table')
+        slot = request.POST.get('slot')
+
+        
+        if not Reservation.objects.filter(reservation_date=date, table=table, slot=slot).exists():
+            context["error"] = "This table is already Reserve"
+            return render(request, 'customer/reservation.html', context)
+        else:
+            return render(request, 'customer/reservation.html', {"error": "This table is already Reserve"})
+    
+
+    return render(request, 'customer/reservation.html', context)
+
+def reservation_detail(request):
+    return render(request, 'customer/reservation_detail.html')
+
+def search_reservations(request):
+    query = request.GET.get('reservation_date')
+    if query:
+        reservations = Reservation.objects.filter(reservation_date=query)
+        print(reservations)
+    else:
+        reservations = Reservation.objects.all()
+
+    reservations_list = [{
+        'id': reservation.table.id,
+        'reservation_date': reservation.reservation_date,
+        'start_time': reservation.slot.start_time,
+        'end_time': reservation.slot.end_time,
+    } for reservation in reservations]
+
+    return JsonResponse({'reservations': reservations_list})
 
 def categories_card(request, *args, **kwargs):
 
     category_name = kwargs['category_name']  #{key: value}
-
-    category = Category.objects.get(category_name=category_name)
-    
+    category = Category.objects.get(category_name=category_name) 
     categories = Category.objects.all()
-
-    menu_items = MenuItem.objects.filter(catagory=category.id)
-    
+    menu_items = MenuItem.objects.filter(catagory=category.id) 
     context = {'menus': menu_items, 'categories': categories}
-
-
 
     return render(request, 'customer/cards.html', context)
 
