@@ -139,10 +139,6 @@ def reservation(request):
             context["error"] = 'The date must be latest'
             return render(request, 'customer/reservation.html', context)
 
-
-
-    
-
     return render(request, 'customer/reservation.html', context)
 
 
@@ -150,9 +146,7 @@ def reservation(request):
 def reservation_detail(request):
     categories = Category.objects.all()
     reservations = Reservation.objects.filter(reservation_date__gte=realdate.today())
-    # reservations = Reservation.objects.all()
     context = {'categories': categories, 'reservations':reservations}
-    print(reservations)
     return render(request, 'customer/reservation_detail.html', context)
 
 @login_required(login_url='signup')
