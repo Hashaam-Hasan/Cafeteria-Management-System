@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User as AuthUser
 from django.contrib.auth import login, authenticate, logout
 from django.http import JsonResponse
+from datetime import date as realdate, datetime
+from django.contrib.auth.decorators import login_required
+
 from .models import *
 
 
@@ -104,29 +107,55 @@ def home(request, *args, **kwargs):
 def cart(request):
     return render(request, 'customer/cart.html')
 
+
+@login_required(login_url='signup')
 def reservation(request):
     slots = Slot.objects.all()
     tables = Table.objects.all()
-    context = {"slots": slots, "tables": tables}
-
+    categories = Category.objects.all()
+    context = {"slots": slots, "tables": tables, 'categories': categories}
+    
     if request.method == "POST":
         date = request.POST.get('date')
         table = request.POST.get('table')
         slot = request.POST.get('slot')
+        user_id = request.user.email
+        user = User.objects.get(email=user_id)
+        print(user_id)
 
-        
-        if not Reservation.objects.filter(reservation_date=date, table=table, slot=slot).exists():
-            context["error"] = "This table is already Reserve"
-            return render(request, 'customer/reservation.html', context)
+        date_object = datetime.strptime(date, "%Y-%m-%d").date() #This is changing the date which is in string in to datetime object
+                                                                 # Because > or < this comaprison can not apply on different datatypes
+        if date_object >= realdate.today():
+            if not Reservation.objects.filter(reservation_date=date, table=table, slot=slot).exists():
+                slot_instance = Slot.objects.get(id=slot)
+                table_instance = Table.objects.get(id=table)
+                Reservation.objects.create(reservation_date=date_object,user = user,table=table_instance, slot=slot_instance, is_reserve=True)
+                context["error"] = 'You Reserve The Table'
+                return render(request, 'customer/reservation.html', context)
+            else:
+                context["error"] = 'This table is already Reserve'
+                return render(request, 'customer/reservation.html', context)
         else:
-            return render(request, 'customer/reservation.html', {"error": "This table is already Reserve"})
+            context["error"] = 'The date must be latest'
+            return render(request, 'customer/reservation.html', context)
+
+
+
     
 
     return render(request, 'customer/reservation.html', context)
 
-def reservation_detail(request):
-    return render(request, 'customer/reservation_detail.html')
 
+@login_required(login_url='signup')
+def reservation_detail(request):
+    categories = Category.objects.all()
+    reservations = Reservation.objects.filter(reservation_date__gte=realdate.today())
+    # reservations = Reservation.objects.all()
+    context = {'categories': categories, 'reservations':reservations}
+    print(reservations)
+    return render(request, 'customer/reservation_detail.html', context)
+
+@login_required(login_url='signup')
 def search_reservations(request):
     query = request.GET.get('reservation_date')
     if query:

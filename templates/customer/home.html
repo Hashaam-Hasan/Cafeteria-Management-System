@@ -246,7 +246,7 @@
                             <h5 class="card-title">{{ category.category_name }}</h5>
                             <p class="card-text">{{ category.category_description }}</p>
                             <div class="card-icon">
-                                <a href="#">
+                                <a href="{% url 'categories-cards' category_name=category.category_name %}">
                                     <button type="button" class="btn btn-outline-primary" style="width:25%; color: black; border-color: black; border-radius: 15px;">Go!</button>
                                 </a>
                             </div>

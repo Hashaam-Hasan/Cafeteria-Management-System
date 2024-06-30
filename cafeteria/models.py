@@ -91,7 +91,7 @@ class Table(models.Model):
 
 class Reservation(models.Model):
     reservation_date = models.DateField()
-    no_of_guests = models.IntegerField()
+    # no_of_guests = models.IntegerField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     slot = models.ForeignKey(Slot, on_delete=models.SET_NULL, null=True, blank=True)
     table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True, blank=True)

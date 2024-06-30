@@ -66,6 +66,26 @@
         .search-container button:hover {
             background-color: #45a049;
         }
+
+        .button {
+            padding: 13px;
+            margin: 5px 0;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+            color: white;   
+        }
+
+        .fa-check {
+            color: red;
+        }
 </style>
 
 
@@ -75,6 +95,7 @@
             <form action="/search" method="get">{% csrf_token %}
                 <input type="date" id="reservation_date" name="reservation_date">
                 <button type="submit"><i class="fas fa-search"></i> Search</button>
+                <a href="{% url 'Reservation_Detail' %}" class="button" style="color: white;">All</a>
             </form>
         </div>
         <table>
@@ -88,7 +109,15 @@
                 </tr>
             </thead>
             <tbody id="reservationTableBody">
-                
+                {% for reservation in reservations %}
+                <tr>
+                    <td>{{reservation.table.id}}</td>
+                    <td>{{reservation.reservation_date}}</td>
+                    <td>{{reservation.slot.start_time}}</td>
+                    <td>{{reservation.slot.end_time}}</td>
+                    <td><i class="fas fa-check"></i></td>
+                </tr>
+                {% endfor %}
                 
                 
                 <!-- Add more reservation rows as needed -->
