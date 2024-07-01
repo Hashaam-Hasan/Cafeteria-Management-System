@@ -372,3 +372,6 @@ def categories_card(request, *args, **kwargs):
 
     return render(request, 'customer/cards.html', context)
 
+
+def checkout(request):
+    return render(request, 'customer/checkout.html')

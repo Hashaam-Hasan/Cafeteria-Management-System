@@ -1,0 +1,146 @@
+{% extends 'base/basic.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'customer_css/checkout.css' %}">
+{% endblock %}
+
+{% block content %}
+<style>
+        
+    /* .MainSection {
+        height: 100vh;
+    } */
+
+    .CheckoutImg{
+        width: 98vw;
+        height: 45vh;
+        background-image: url("/static/images/customer_images/delicious-food-breakfast.jpeg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size:cover;
+        object-position: center;
+        object-fit: contain;
+        position: relative;
+        
+
+    }
+    
+</style>
+<section >
+
+    
+
+
+    <div class="CheckoutImg">
+        <div class="BlackBox"></div>
+        <div class="CheckoutText">
+            <div class="Text1">Checkout</div>
+            <div class="Text2">Home/Checkout</div>
+        </div>
+    </div>
+
+    <div class="MainSection">
+
+        <div class="BillingsDetails">
+            <div class="heading" style="width: 100%;">
+                <p>Billing Details</p>
+            </div>
+            <div class="feild">FirstName*<input id="inputfield" type="text" placeholder="FirstName" required></div>
+            <div class="feild">LastName* <input id="inputfield" type="text" placeholder="LastName" required></div>
+            <div class="feild">Email* <input id="inputfield" type="text" placeholder="Email" required></div>
+            <div class="feild">Address* <input id="inputfield" type="text" placeholder="Address" required></div>
+            <div class="feild">ContactNo* <input id="inputfield" type="text" placeholder="ContactNo" required></div>
+            <div class="feild">City/State*<input id="inputfield" type="text" placeholder="City/State" required></div>
+            <!-- <fieldset class="OrderInstruction">
+                <legend>Order Instructions (If any)</legend>
+                <textarea name="" placeholder="Please Write Here" id="" cols="" rows="5" style="padding: 0.2rem;"></textarea>
+            </fieldset> -->
+            
+
+
+            <!-- <div class="feild">Order Details(if any) <textarea
+                     id="inputfield"  placeholder="Order Details"></div> -->
+
+
+
+
+
+
+        </div>
+
+
+        <div class="OrderDetails">
+            <p>Order Details</p>
+            <div class="FirstContainer">
+
+                <div class="DetailBox" style="font-weight: 800; font-size: 1rem;">
+                    <div>Product</div>
+                    <div>Total</div>
+                </div>
+
+
+                
+                <div class="DetailBox">
+                    <div>Cheese Cake with HoneyBee <span>x2</span></div>
+                    <div>$500.00</div>
+                </div>
+                <hr>
+
+                <div class="DetailBox">
+                    <div>Chocolate Shake with Black Coffee Beans and Hazulnet Flavor <span>x1</span></div>
+                    <div>$300.00</div>
+                </div>
+
+
+                <div class="DetailBox">
+                    <div>GST</div>
+                    <div>8.5%</div>
+                </div>
+                <hr>
+
+
+                <div class="DetailBox">
+                    <div>Total</div>
+                    <div>$500.00</div>
+                </div>
+                
+            </div>
+
+            <div class="SecondContainer">
+
+                <div class="feild order-type">Order Type*
+                    <select name="OrderType">
+                        <option value="DiningIn">Dining In</option>
+                        <option value="TakeAway">TakeAway</option>
+                    </select>
+                </div>
+
+
+                <div class="feild del-loc">Delivery Location*
+                    <select name="Location">
+                        <option value="select" disabled selected>Selected</option>
+                        <option value="East District">East District</option>
+                        <option value="West District">West District</option>
+                        <option value="North District">North District</option>
+                        <option value="South District">South District</option>
+                        <option value="Malir District">Malir District</option>
+                    </select>
+                </div>
+
+                <div class="CheckoutBtn">
+                    <button>PROCEED TO CHECKOUT</button>
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+</section>
+{% endblock %}

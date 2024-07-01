@@ -2,14 +2,20 @@
 document.addEventListener('DOMContentLoaded', function(e) {
     e.preventDefault();
     const navbar = document.getElementById('navbar');
-    const login_btn = document.getElementById('login-btn');
+    const login_btn = document.querySelectorAll('#login-btn');
     window.addEventListener('scroll', function() {
         if (window.scrollY > 0) {
             navbar.id = "navbar-scrolled";
-            login_btn.id = "login-btn-scrolled";
+            login_btn.forEach((log)=>{
+              log.id = "login-btn-scrolled";
+            })
+            
         } else {
             navbar.id = "navbar";
             login_btn.id = "login-btn"
+            login_btn.forEach((log)=>{
+              log.id = "login-btn";
+            })
         }
     });
 });

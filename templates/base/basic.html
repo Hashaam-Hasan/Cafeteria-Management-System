@@ -320,13 +320,15 @@
 
         <!----------------------   Category Offcanva  End ----------------------------- -->
         
-    
+        <div class = "row">
+            <div class = "col">
         {% block content %}{% endblock %}
+            </div>
+        </div>
     
         <!-------------------------FOOTER START--------------------------->
         
-        <div class = "row">
-            <div class = "col">
+        
                 <footer class="footer">
                     <div class="container text-center">
                       <h5 class="mb-4">Follow Us</h5>
@@ -366,8 +368,7 @@
                       <p>&copy; 2024  C for Cafeteria</p>
                     </div>
                   </footer>
-            </div>
-        </div>
+            
 
         <!-------------------------FOOTER END----------------------------->
     </div>
@@ -405,6 +406,8 @@ arrow_back.addEventListener('click', (e)=>{
     category_offcanva_div.classList.remove('category-offcanva-active')
     category_offcanva_div.classList.add('category-offcanva-not-active')
 })
+
+
     </script>
 </body>
 </html>

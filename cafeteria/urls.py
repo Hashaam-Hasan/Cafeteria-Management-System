@@ -18,4 +18,5 @@ urlpatterns = [
     path('categories-cards/<str:category_name>', categories_card, name="categories-cards"),
     path('add-to-cart/', Add_to_Cart, name="add-to-cart"),
     path('card_description/<str:menu_name>', card_description, name="card_description"),
+    path('checkout', checkout, name="checkout"),
 ]

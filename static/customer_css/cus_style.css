@@ -191,6 +191,8 @@ body {
     background: linear-gradient(to right, rgb(46, 45, 45), black);;
     color: white;
     padding: 40px 0;
+    position: absolute;
+    bottom: 0;
    
   }
   .footer a {
