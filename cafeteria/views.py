@@ -4,7 +4,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.http import JsonResponse
 from datetime import date as realdate, datetime
 from django.contrib.auth.decorators import login_required
-
+from django.db.models import Sum
 from .models import *
 
 
@@ -103,9 +103,204 @@ def home(request, *args, **kwargs):
     context = {'categories': categories}
     return render(request, 'customer/home.html', context)
 
-
+@login_required(login_url='signup')
 def cart(request):
-    return render(request, 'customer/cart.html')
+    if request.user.is_authenticated:
+        user_email = request.user.email
+        user = User.objects.get(email=user_email)
+        orderStatus = OrderStatus.objects.filter(order_status_type="pending")[0]
+        order = Order.objects.filter(user=user, order_status=orderStatus)[0]
+        orderItems = OrderItem.objects.filter(order=order)
+        order_item_split_name = ""
+        if orderItems.exists():
+            order_item_split_name = orderItems[0].order_item_name.split(" ")[0]
+        categories = Category.objects.all()
+        context = {'categories': categories, "orderItems": orderItems, "order":order} 
+    return render(request, 'customer/cart.html', context)
+
+
+#Manipulate quantity from cart page
+@login_required(login_url='signup')
+def cart_quantity_add(request):
+
+    if request.user.is_authenticated:
+        query_quantity = request.GET.get('quantity')
+        query_name = request.GET.get('menu_name')
+        
+        
+        try:
+            user_email = request.user.email
+            user = User.objects.get(email=user_email)
+            orderStatus = OrderStatus.objects.get(order_status_type='pending')
+            menu = MenuItem.objects.get(menu_name=query_name)
+            inventory = Inventory.objects.get(menu=menu)
+            if (inventory.inventory_quantity-int(query_quantity)) >= inventory.min_level_stock:
+                
+                
+                order = Order.objects.filter(user=user, order_status=orderStatus).latest('order_date')
+                order_item = OrderItem.objects.filter(order=order, menu=menu)
+                
+                # update_order_total(order)
+
+                print(order_item[0].order_item_quantity-int(query_quantity) != 0, order_item[0].order_item_quantity, query_quantity)
+
+                if order_item[0].order_item_quantity-int(query_quantity) != 0:
+                    inventory = Inventory.objects.get(menu=menu)
+                    inventory.inventory_quantity -= (int(query_quantity)-order_item[0].order_item_quantity)
+                    print(inventory.inventory_quantity)
+                    inventory.save()
+                # print(inventory.inventory_quantity)
+                
+                order_item.update(order_item_quantity=query_quantity, order_item_total_price = menu.price * int(query_quantity) )
+
+
+                order_items = OrderItem.objects.filter(order=order)
+                
+                value_price = 0
+                for order_Item in order_items:
+                    
+                    value_price += order_Item.order_item_total_price
+                
+                order.total_price = value_price
+
+                order.save()
+
+            
+                orderItem_price = order_item[0].order_item_total_price
+                orderItem_id = order_item[0].id
+               
+    
+                return JsonResponse({"success":"success", 'orderItem_id':orderItem_id, "orderItem_price":orderItem_price, "order_total_price":order.total_price})
+            else:
+                print(menu.menu_name)
+                return JsonResponse({"error":"No Stock"})
+
+        except Exception as e:
+            print(e)
+            return JsonResponse({"error":"Something Went Wrong"})
+
+
+#Order instance with filter
+def update_order_total(order): #Helper Function
+    order = order[0]
+    order_items = OrderItem.objects.filter(order=order)
+    print(order_items)
+    aDD = 0
+    for order_item in order_items:
+        print(order_item.order_item_total_price)
+        aDD += order_item.order_item_total_price
+    print(aDD)
+    order.total_price = aDD
+
+    order.save()
+
+
+#Order instance with out filter
+def update_order_total_wt_f(order): #Helper Function
+    order_items = OrderItem.objects.filter(order=order)
+    print(order_items)
+    aDD = 0
+    for order_item in order_items:
+        print(order_item.order_item_total_price)
+        aDD += order_item.order_item_total_price
+    print(aDD)
+    order.total_price = aDD
+
+    order.save()
+    
+
+#Remove item from the cart
+@login_required(login_url='signup')
+def remove_item(request):
+    order_item_id = request.GET.get("orderItemId")
+    print(order_item_id)
+    menu_name = OrderItem.objects.filter(id=order_item_id)[0].order_item_name
+    qnt = OrderItem.objects.filter(id=order_item_id)[0].order_item_quantity
+    OrderItem.objects.filter(id=order_item_id).delete()
+    user_email = request.user.email #Getting user email who is login in the corresponding sessions
+    user = User.objects.get(email = user_email)
+    order = Order.objects.filter(user = user)
+    
+    menu = MenuItem.objects.get(menu_name=menu_name)
+    inventory = Inventory.objects.get(menu=menu)
+    inventory.inventory_quantity += qnt
+    inventory.save()
+
+
+    update_order_total(order)
+    order_total_price = order[0].total_price
+    return JsonResponse({"success":"success", "order_total_price":order_total_price})
+
+
+#Add To Cart Funcionality
+@login_required(login_url='signup')
+def Add_to_Cart(request):
+    if request.user.is_authenticated:
+        query = request.GET.get('menu-name')
+        query1 = request.GET.get('cart-quantity') 
+        
+
+        menu_item = MenuItem.objects.get(menu_name = query) #Getting The menu A/C to click menu by customer
+        user_email = request.user.email #Getting user email who is login in the corresponding sessions
+        user = User.objects.get(email = user_email)
+        order = Order.objects.filter(user = user) #Getting all the order
+        
+        inventory = Inventory.objects.get(menu=menu_item)
+        if inventory.inventory_quantity >= inventory.min_level_stock :
+            
+            order_status = OrderStatus.objects.get(id = 1) #Getting order status (Pending)
+            if order.exists():
+                latest_order = Order.objects.filter(user = user).latest('order_date') #Getting the latest order by user to check if it is pending or complete
+                if latest_order.order_status.order_status_type.lower() == order_status.order_status_type.lower() :
+                    if OrderItem.objects.filter(order=latest_order,menu = menu_item).exists():
+                        orderitem = OrderItem.objects.filter(order=latest_order,menu = menu_item) 
+
+                        
+                        quantity = orderitem[0].order_item_quantity
+                        if query1 is None:
+                            orderitem.update(order_item_quantity=quantity+1, order_item_total_price = menu_item.price * (quantity + 1)) 
+                            inventory.inventory_quantity -= 1
+                            inventory.save()
+                        else:
+                            
+                            orderitem.update(order_item_quantity=quantity+int(query1), order_item_total_price = menu_item.price * (quantity + 1)) 
+                            inventory.inventory_quantity -= int(query1)
+                            inventory.save()
+                        update_order_total_wt_f(latest_order) 
+                        return JsonResponse({"success":"Successfully Updated", "check":False})
+                    else:
+                        order_item = OrderItem.objects.create(menu = menu_item, 
+                        order_item_name = menu_item.menu_name,order = latest_order, order_item_quantity = 1,
+                        order_item_total_price = menu_item.price)
+                        inventory.inventory_quantity -= 1
+                        inventory.save()
+                        update_order_total_wt_f(latest_order) 
+                        return JsonResponse({"success":"Successfully Added", "check":False})
+            else:
+                new_order = Order.objects.create(user=user, total_price=menu_item.price, order_status=order_status)
+                new_order_item = OrderItem.objects.create(menu = menu_item, 
+                        order_item_name = menu_item.menu_name,order = new_order, order_item_quantity = 1,
+                        order_item_total_price = menu_item.price)
+                return JsonResponse({"success":"Successfully Created", "check":False})
+        else: 
+            return JsonResponse({"error": "No Stock", "check":True})   
+    return JsonResponse({'error': 'Try Again'})
+
+
+
+def card_description(request, *args, **kwargs):
+
+    categories = Category.objects.all()
+    menuName = kwargs['menu_name'] 
+    print(menuName)
+    menu_item = MenuItem.objects.get(menu_name=menuName)
+    inventory = Inventory.objects.get(menu=menu_item)
+    stock = inventory.inventory_quantity >= inventory.min_level_stock
+
+    print(menu_item.catagory.category_name)
+
+    context = {'categories': categories, "menus": menu_item, 'stock':stock}
+    return render(request, 'customer/card_description.html', context)
 
 
 @login_required(login_url='signup')

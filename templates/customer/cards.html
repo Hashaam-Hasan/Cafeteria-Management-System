@@ -5,108 +5,123 @@
     {% include 'base/extra_links.html' %}
     <link rel="stylesheet" href="{% static 'customer_css/card_css.css' %}">
     <link rel="stylesheet" href="{% static 'customer_css/home.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {% endblock %}
-
-
-
 
 {% block extra_js %}
-{% include 'base/extra_js.html' %}
+    {% include 'base/extra_js.html' %}
 {% endblock %}
 
-
-
-
 {% block content %}
-
 <style>
     body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: url("/static/images/customer_images/cover.jpg") no-repeat;
-            background-size: cover;
-            
-        }
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: url("/static/images/customer_images/cover.jpg") no-repeat;
+        background-size: cover;
+    }
 
-        body::before{
-            backdrop-filter: none;
-        }
-        #cards{
-            border: none;
-            padding: 50px;
-            /* margin: 5px; */
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 40px;
-            margin-top: 10rem;
-            /* backdrop-filter: blur(20px); */
+    body::before {
+        backdrop-filter: none;
+    }
 
-        }
+    #cards {
+        border: none;
+        padding: 50px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 40px;
+        margin-top: 10rem;
+    }
 
-        #card-inner {
-            backdrop-filter: blur(20px);
-            /* background-color: cornsilk; */
-            background-color: darkred;
-            padding: 0;
-        }
+    #card-inner {
+        backdrop-filter: blur(20px);
+        background-color: darkred;
+        padding: 0;
+    }
 
-        #card-inner img {
-            width: 100%;
-            /* height: 241px; */
-            object-fit: cover;
-        }
-
-        /* .card {
-            backdrop-filter: blur(10px);
-        } */
+    #card-inner img {
+        width: 100%;
+        object-fit: cover;
+    }
 </style>
 
 <section id="cards" class="row">
     {% for menu in menus %}
     <div class="card col-6 col-md-4 col-sm-8" style="width: 18rem; height: 32rem;" id="card-inner">
-        <img src="{{menu.menu_image.url}}" class="card-img-top" alt="..."  >
+        <img src="{{menu.menu_image.url}}" class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title">{{menu.menu_name}}</h5>
             <hr>
             <p class="card-text">
-                
-                <p class="price">Price: ${{menu.price}}</p></p>
-
-            <a href="#" class="btn btn-danger p-3">View item</a>
-            <a href="#" class="btn btn-danger p-3">Add to Cart</a>
-
-            <!-- <div class="star">
-                <input type="radio" id="r1-1" name="rating1">
-                <label for="r1-1"></label>
-                <input type="radio" id="r2-1" name="rating1">
-                <label for="r2-1"></label>
-                <input type="radio" id="r3-1" name="rating1">
-                <label for="r3-1"></label>
-                <input type="radio" id="r4-1" name="rating1">
-                <label for="r4-1"></label>
-                <input type="radio" id="r5-1" name="rating1">
-                <label for="r5-1"></label>
-            </div> -->
+                <p class="price">Price: ${{menu.price}}</p>
+            </p>
+            <a href="{% url 'card_description' menu_name=menu.menu_name %}" class="btn btn-danger p-3">View item</a>
+            <a class="btn btn-success p-3 add-to-cart" data-menu-name="{{menu.menu_name}}">Add to Cart</a>
         </div>
     </div>
     {% endfor %}
-
-    
-    
-
-
-
-    
-
-
-
-    
-
-
-
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let buttons = document.querySelectorAll('.add-to-cart');
+    buttons.forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            let menuName = button.getAttribute('data-menu-name');
+            console.log('Menu Name:', menuName);
+
+            // // Example of sending menuID to the server using Fetch API
+            fetch(`/add-to-cart?menu-name=${menuName}`, {
+                // method: 'POST',
+                // headers: {
+                //     'Content-Type': 'application/json',
+                //     'X-CSRFToken': '{{ csrf_token }}' // Ensure you include CSRF token if using Django
+                // },
+                // body: JSON.stringify({ menu_id: menuID })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // console.log('Success:', data);
+                console.log('Success:', data.check);
+                    if (!data.check) {
+                        console.log("ERROR")
+                        Swal.fire({
+                        title: 'Success!',
+                        text: data.success,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                    }
+                    else if (data.check) {
+                        Swal.fire({
+                        title: 'Warning!',
+                        text: data.error,
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    });
+                    }
+                    
+                
+                // Handle success response
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Something went wrong!',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
+        });
+    });
+});
+</script>
 {% endblock %}

@@ -18,12 +18,12 @@ document.addEventListener('DOMContentLoaded', function(e) {
 
 
 function decreaseQuantity(button) {
-    var input = button.nextElementSibling;
-    var currentValue = parseInt(input.value);
-    if (currentValue > 1) {
+  var input = button.nextElementSibling;
+  var currentValue = parseInt(input.value);
+  if (currentValue > 0) {
       input.value = currentValue - 1;
-    }
   }
+}
 
 function increaseQuantity(button) {
     var input = button.previousElementSibling;
@@ -32,20 +32,17 @@ function increaseQuantity(button) {
   }
 
 
-// function increaseValue() {
-//     var value = parseInt(document.getElementById('number').value, 10);
-//     value = isNaN(value) ? 0 : value;
-//     value++;
-//     document.getElementById('number').value = value;
-//   }
-  
-//   function decreaseValue() {
-//     var value = parseInt(document.getElementById('number').value, 10);
-//     value = isNaN(value) ? 0 : value;
-//     value < 1 ? value = 1 : '';
-//     value--;
-//     document.getElementById('number').value = value;
-//   }
+
+
+let input_vals = document.querySelectorAll('#get_inp_val')
+console.log(document.querySelector('.sub-check'))
+document.querySelector('.sub-check').addEventListener('click', (e)=>{
+  e.preventDefault();
+  input_vals.forEach((inp_val)=>{
+    let menuName = inp_val.getAttribute('data-menu-name');
+    console.log(inp_val.value, menuName)
+  })
+})
 
 
 
