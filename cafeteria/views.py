@@ -109,14 +109,19 @@ def cart(request):
         user_email = request.user.email
         user = User.objects.get(email=user_email)
         orderStatus = OrderStatus.objects.filter(order_status_type="pending")[0]
-        order = Order.objects.filter(user=user, order_status=orderStatus)[0]
-        orderItems = OrderItem.objects.filter(order=order)
-        order_item_split_name = ""
-        if orderItems.exists():
-            order_item_split_name = orderItems[0].order_item_name.split(" ")[0]
-        categories = Category.objects.all()
-        context = {'categories': categories, "orderItems": orderItems, "order":order} 
-    return render(request, 'customer/cart.html', context)
+        try:
+            order = Order.objects.filter(user=user, order_status=orderStatus)[0]
+            orderItems = OrderItem.objects.filter(order=order)
+            order_item_split_name = ""
+            if orderItems.exists():
+                order_item_split_name = orderItems[0].order_item_name.split(" ")[0]
+            categories = Category.objects.all()
+            context = {'categories': categories, "orderItems": orderItems, "order":order} 
+            return render(request, 'customer/cart.html', context)
+        except:
+            categories = Category.objects.all()
+            context = {'categories': categories} 
+            return render(request, 'customer/cart.html', context)
 
 
 #Manipulate quantity from cart page
@@ -134,20 +139,35 @@ def cart_quantity_add(request):
             orderStatus = OrderStatus.objects.get(order_status_type='pending')
             menu = MenuItem.objects.get(menu_name=query_name)
             inventory = Inventory.objects.get(menu=menu)
-            if (inventory.inventory_quantity-int(query_quantity)) >= inventory.min_level_stock:
+            order = Order.objects.filter(user=user, order_status=orderStatus).latest('order_date')
+            order_item = OrderItem.objects.filter(order=order, menu=menu)
+
+            print(order_item[0].order_item_quantity, query_quantity, menu.menu_name)
+            if order_item[0].order_item_quantity == int(query_quantity):
+                    print("Enter")
+
+                    orderItem_price = order_item[0].order_item_total_price
+                    orderItem_id = order_item[0].id
+
+
+
+                    return JsonResponse({"success":"success", 'orderItem_id':orderItem_id, "orderItem_price":orderItem_price, "order_total_price":order.total_price})
+
+            if (inventory.inventory_quantity-(int(query_quantity)-1)) >= inventory.min_level_stock:
                 
                 
-                order = Order.objects.filter(user=user, order_status=orderStatus).latest('order_date')
-                order_item = OrderItem.objects.filter(order=order, menu=menu)
+                
                 
                 # update_order_total(order)
 
-                print(order_item[0].order_item_quantity-int(query_quantity) != 0, order_item[0].order_item_quantity, query_quantity)
+                # print(order_item[0].order_item_quantity-int(query_quantity) != 0, order_item[0].order_item_quantity, query_quantity)
+
+                
 
                 if order_item[0].order_item_quantity-int(query_quantity) != 0:
                     inventory = Inventory.objects.get(menu=menu)
                     inventory.inventory_quantity -= (int(query_quantity)-order_item[0].order_item_quantity)
-                    print(inventory.inventory_quantity)
+                    # print(inventory.inventory_quantity)
                     inventory.save()
                 # print(inventory.inventory_quantity)
                 
@@ -172,7 +192,9 @@ def cart_quantity_add(request):
     
                 return JsonResponse({"success":"success", 'orderItem_id':orderItem_id, "orderItem_price":orderItem_price, "order_total_price":order.total_price})
             else:
-                print(menu.menu_name)
+                # if order_item[0].order_item_quantity == int(query_quantity):
+                #     return JsonResponse({"success":"success"})
+                print(menu.menu_name, inventory.inventory_quantity-int(query_quantity)) 
                 return JsonResponse({"error":"No Stock"})
 
         except Exception as e:
@@ -191,7 +213,7 @@ def update_order_total(order): #Helper Function
         aDD += order_item.order_item_total_price
     print(aDD)
     order.total_price = aDD
-
+    print(order.total_price, "Inside")
     order.save()
 
 
@@ -219,7 +241,7 @@ def remove_item(request):
     OrderItem.objects.filter(id=order_item_id).delete()
     user_email = request.user.email #Getting user email who is login in the corresponding sessions
     user = User.objects.get(email = user_email)
-    order = Order.objects.filter(user = user)
+    order = Order.objects.filter(user = user).latest('order_date')
     
     menu = MenuItem.objects.get(menu_name=menu_name)
     inventory = Inventory.objects.get(menu=menu)
@@ -227,8 +249,9 @@ def remove_item(request):
     inventory.save()
 
 
-    update_order_total(order)
-    order_total_price = order[0].total_price
+    update_order_total_wt_f(order)
+    order_total_price = order.total_price
+    print(order_total_price, request.user.email)
     return JsonResponse({"success":"success", "order_total_price":order_total_price})
 
 
@@ -250,11 +273,13 @@ def Add_to_Cart(request):
             
             order_status = OrderStatus.objects.get(id = 1) #Getting order status (Pending)
             if order.exists():
+                
                 latest_order = Order.objects.filter(user = user).latest('order_date') #Getting the latest order by user to check if it is pending or complete
                 if latest_order.order_status.order_status_type.lower() == order_status.order_status_type.lower() :
                     if OrderItem.objects.filter(order=latest_order,menu = menu_item).exists():
                         orderitem = OrderItem.objects.filter(order=latest_order,menu = menu_item) 
 
+                        
                         
                         quantity = orderitem[0].order_item_quantity
                         if query1 is None:
@@ -276,13 +301,15 @@ def Add_to_Cart(request):
                         inventory.save()
                         update_order_total_wt_f(latest_order) 
                         return JsonResponse({"success":"Successfully Added", "check":False})
-            else:
-                new_order = Order.objects.create(user=user, total_price=menu_item.price, order_status=order_status)
-                new_order_item = OrderItem.objects.create(menu = menu_item, 
-                        order_item_name = menu_item.menu_name,order = new_order, order_item_quantity = 1,
-                        order_item_total_price = menu_item.price)
-                return JsonResponse({"success":"Successfully Created", "check":False})
+                else:
+                    
+                    new_order = Order.objects.create(user=user, total_price=menu_item.price, order_status=order_status)
+                    new_order_item = OrderItem.objects.create(menu = menu_item, 
+                            order_item_name = menu_item.menu_name,order = new_order, order_item_quantity = 1,
+                            order_item_total_price = menu_item.price)
+                    return JsonResponse({"success":"Successfully Created", "check":False})
         else: 
+            
             return JsonResponse({"error": "No Stock", "check":True})   
     return JsonResponse({'error': 'Try Again'})
 
@@ -374,4 +401,41 @@ def categories_card(request, *args, **kwargs):
 
 
 def checkout(request):
-    return render(request, 'customer/checkout.html')
+    if request.user.is_authenticated:
+        user_email = request.user.email
+        user = User.objects.get(email=user_email)
+        categories = Category.objects.all()
+        order = Order.objects.filter(user=user).latest('order_date')
+        context = {"user":user, "order":order, 'categories':categories} 
+        orderStatus_pending = OrderStatus.objects.get(order_status_type='pending')
+        if order.order_status == orderStatus_pending:
+            order_item = OrderItem.objects.filter(order=order)
+            context["order_item"] = order_item
+
+        if request.method == "POST":
+            address = request.POST.get('address')
+            contactno = request.POST.get("ContactNo")
+            city = request.POST.get("city")
+            orderType = request.POST.get("OrderType")
+            payment_type = request.POST.get("payment_type")
+
+            print(payment_type)
+
+            orderStatus = OrderStatus.objects.get(order_status_type='process')
+
+            
+            order.order_type = orderType
+            order.order_status = orderStatus
+            order.save()
+            Payment.objects.create(address=address, contact_no=contactno, city=city, payment_type=payment_type, order=order, user=user)
+
+            print("Successfully")
+            return redirect("checkout")
+            
+
+
+    return render(request, 'customer/checkout.html', context)
+
+######################################### RECIPTIONIST/MANAGER #######################################
+
+

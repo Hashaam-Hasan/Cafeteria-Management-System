@@ -46,12 +46,26 @@
             <div class="heading" style="width: 100%;">
                 <p>Billing Details</p>
             </div>
-            <div class="feild">FirstName*<input id="inputfield" type="text" placeholder="FirstName" required></div>
-            <div class="feild">LastName* <input id="inputfield" type="text" placeholder="LastName" required></div>
-            <div class="feild">Email* <input id="inputfield" type="text" placeholder="Email" required></div>
-            <div class="feild">Address* <input id="inputfield" type="text" placeholder="Address" required></div>
-            <div class="feild">ContactNo* <input id="inputfield" type="text" placeholder="ContactNo" required></div>
-            <div class="feild">City/State*<input id="inputfield" type="text" placeholder="City/State" required></div>
+            <form method = "post" action="{% url 'checkout' %}" >{% csrf_token %}
+                <div class="div" style="display: flex; flex-direction: row; flex-wrap: wrap;">
+                    <div class="feild">FirstName*<input id="inputfield" type="text" placeholder="FirstName" value="{{user.f_name}}" disabled></div>
+                    <div class="feild">LastName* <input id="inputfield" type="text" placeholder="LastName" value="{{user.l_name}}" disabled></div>
+                    <div class="feild">Email* <input id="inputfield" type="text" placeholder="Email" value="{{user.email}}" disabled></div>
+                    <div class="feild">Address* <input id="inputfield" type="text" placeholder="Address" name="address" required></div>
+                    <div class="feild">ContactNo* <input id="inputfield" type="text" placeholder="ContactNo" name="ContactNo" required></div>
+                    <div class="feild">City/State*<input id="inputfield" type="text" placeholder="City/State" name="city" required></div>
+                    <div class="feild">Payment Type*<input id="inputfield" type="text" placeholder="Payment Type" name="payment_type" value="COD" ></div>
+                    <div class="feild order-type">Order Type*
+                        <select name="OrderType" >
+                            <option value="DiningIn">Dining In</option>
+                            <option value="TakeAway">TakeAway</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="CheckoutBtn">
+                    <button type="submit">PLACED ORDER</button>
+                </div>
+            </form>
             <!-- <fieldset class="OrderInstruction">
                 <legend>Order Instructions (If any)</legend>
                 <textarea name="" placeholder="Please Write Here" id="" cols="" rows="5" style="padding: 0.2rem;"></textarea>
@@ -80,36 +94,28 @@
                 </div>
 
 
+                {% for order in order_item %}
+                <div class="DetailBox">
+                    <div>{{order.order_item_name}} <span>x{{order.order_item_quantity}}</span></div>
+                    <div>${{order.order_item_total_price}}</div>
+                </div>
+                <hr>
+                {% endfor %}
+
+                
+
                 
                 <div class="DetailBox">
-                    <div>Cheese Cake with HoneyBee <span>x2</span></div>
-                    <div>$500.00</div>
-                </div>
-                <hr>
-
-                <div class="DetailBox">
-                    <div>Chocolate Shake with Black Coffee Beans and Hazulnet Flavor <span>x1</span></div>
-                    <div>$300.00</div>
-                </div>
-
-
-                <div class="DetailBox">
-                    <div>GST</div>
-                    <div>8.5%</div>
-                </div>
-                <hr>
-
-
-                <div class="DetailBox">
                     <div>Total</div>
-                    <div>$500.00</div>
+                    <div>${{order.total_price}}</div>
                 </div>
+                
                 
             </div>
 
             <div class="SecondContainer">
 
-                <div class="feild order-type">Order Type*
+                <!-- <div class="feild order-type">Order Type*
                     <select name="OrderType">
                         <option value="DiningIn">Dining In</option>
                         <option value="TakeAway">TakeAway</option>
@@ -126,11 +132,9 @@
                         <option value="South District">South District</option>
                         <option value="Malir District">Malir District</option>
                     </select>
-                </div>
+                </div> -->
 
-                <div class="CheckoutBtn">
-                    <button>PROCEED TO CHECKOUT</button>
-                </div>
+                
 
             </div>
 
