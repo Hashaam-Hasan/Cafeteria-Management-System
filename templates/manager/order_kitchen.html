@@ -1,0 +1,71 @@
+{% extends 'base/basic_kitchen.html' %}
+{% load static %}
+
+{% block content %}
+<div class="order-body">
+
+    <h1>Order's List<span class="underline-head"></span></h1>
+
+
+    <div class="sort-search-order">
+        <div class="search-form">
+            <form action="#" method="get">
+                <input type="text" name="search" placeholder="Search Order by Order ID...">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+
+        <div class="sort-btn">
+            <a href="" class="Pending">Pending</a>
+            <a href="" class="On-Delivery">On Delivery</a>
+            <a href="" class="Delivered">Delivered</a>
+        </div>
+
+
+    </div>
+</div>
+
+
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer ID</th>
+                <th>Address</th>
+                <th>STATUS</th>
+                <th>QUANTITY</th>
+                <th>SHOW DETAILS</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1000</td>
+                <td>CS1000</td>
+                <td>ABC</td>
+                <td><span class="status pending">Pending</span></td>
+                <td>5</td>
+                <td><a href="{% url 'order-detail' %}">SHOW DETAILS</a></td>
+            </tr>
+            <tr>
+                <td>1001</td>
+                <td>CS1001</td>
+                <td>ABC</td>
+                <td><span class="status stock">Delivered</span></td>
+                <td>150</td>
+                <td><a href="{% url 'order-detail' %}">SHOW DETAILS</a></td>
+            </tr>
+            <tr>
+                <td>1002</td>
+                <td>CS1002</td>
+                <td>ABC</td> 
+                <td><span class="status out-stock">On Delivery</span></td>
+                <td>10</td>
+                <td><a href="{% url 'order-detail' %}">SHOW DETAILS</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'base/basic_kitchen.html' %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="container">
+        <div class="content">
+            <h3>Total Orders</h3>
+            <p class="animate-number"><strong>457</strong></p>
+        </div>
+        <i class="fas fa-shopping-basket icon" aria-hidden="true"></i>
+    </div>
+    <div class="container">
+        <div class="content">
+            <h3>Orders Pending</h3>
+            <p class="animate-number"><strong>5000</strong></p>
+        </div>
+        <!-- <i class="fas fa-shopping-basket icon" aria-hidden="true"></i> -->
+        <i class="fas fa-clock icon" aria-hidden="true"></i>
+
+    </div>
+    <div class="container">
+        <div class="content">
+            <h3>On Delivery</h3>
+            <p class="animate-number"><strong>457</strong></p>
+        </div>
+        <!-- <i class="fas fa-shopping-basket icon" aria-hidden="true"></i> -->
+        <i class="fas fa-truck icon" style="text-align: center;"></i>
+    </div>
+    <div class="container">
+        <div class="content">
+            <h3>Orders Delivered</h3>
+            <p class="animate-number"><strong>457</strong></p>
+        </div>
+        <!-- <i class="fas fa-shopping-basket icon" aria-hidden="true"></i> -->
+        <i class="fas fa-check-double icon" style="width: 40px; text-align: center;"></i>
+        
+    </div>
+</div>
+
+<div class="inventory-head">
+    <h3>Inventory<span class="underline-head"></span></h3>
+    <div class="inv-btn">
+        <a href="" class="in-stock">In Stock</a>
+        <a href="" class="out-stock">Out Of Stock</a>
+        <a href="" class="pending-stock">Pending</a>
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>MAX STOCK LEVEL</th>
+                <th>MIN STOCK LEVEL</th>
+                <th>STATUS</th>
+                <th>QUANTITY</th>
+                <th>NEED RESTOCK</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Product A</td>
+                <td>100</td>
+                <td>10</td>
+                <td><span class="status pending">Pending</span></td>
+                <td>5</td>
+                <td><a href="">Restock</a></td>
+            </tr>
+            <tr>
+                <td>Product B</td>
+                <td>200</td>
+                <td>20</td>
+                <td><span class="status stock">In Stock</span></td>
+                <td>150</td>
+                <td><a href="">Restock</a></td>
+            </tr>
+            <tr>
+                <td>Product C</td>
+                <td>150</td>
+                <td>15</td>
+                <td><span class="status out-stock">Out Of Stock</span></td>
+                <td>10</td>
+                <td><a href="">Restock</a></td>
+            </tr>
+            <!-- Repeat rows as needed -->
+        </tbody>
+    </table>
+</div>
+{% endblock %}

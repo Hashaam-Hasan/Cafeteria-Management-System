@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.7/themes/odometer-theme-default.css" integrity="sha512-kMPqFnKueEwgQFzXLEEl671aHhQqrZLS5IP3HzqdfozaST/EgU+/wkM07JCmXFAt9GO810I//8DBonsJUzGQsQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'kitchen_css/kitchen.css' %}">
+    {% block extra_css %}
+    {% endblock %}
+    <title>Cafeteria Recipionist</title>
+    <style>
+        /* Ensure Odometer numbers are displayed inline */
+        .odometer {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+
+    {% block content %}
+    {% endblock %}
+
+    <div class="toggle-sidebar">
+        <div class="hamburger-1"></div>
+        <div class="hamburger-2"></div>
+        <div class="hamburger-3"></div>
+    </div>
+
+    <div class="offcanvas">
+        <div class="offcanvas-sidebar">
+            <h2>Recipionist</h2>
+            <div class="content">
+                <nav>
+                    <li><a href="{% url 'manager-kitchen' %}">Dashboard</a></li>
+                    <li><a href="{% url 'order-kitchen' %}">Orders</a></li>
+                </nav>
+                <nav>
+                    <li><a href="">Log Out</a></li>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.7/odometer.min.js" integrity="sha512-v3fZyWIk7kh9yGNQZf1SnSjIxjAKsYbg6UQ+B+QxAZqJQLrN3jMjrdNwcxV6tis6S0s1xyVDZrDz9UoRLfRpWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!--  -->
+    <script src="{% static 'javascript/kitchen.js' %}" ></script>
+</body>
+</html>

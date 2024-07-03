@@ -54,11 +54,12 @@
                     <div class="feild">Address* <input id="inputfield" type="text" placeholder="Address" name="address" required></div>
                     <div class="feild">ContactNo* <input id="inputfield" type="text" placeholder="ContactNo" name="ContactNo" required></div>
                     <div class="feild">City/State*<input id="inputfield" type="text" placeholder="City/State" name="city" required></div>
-                    <div class="feild">Payment Type*<input id="inputfield" type="text" placeholder="Payment Type" name="payment_type" value="COD" ></div>
+                    <div class="feild">Payment Type*<input id="inputfield" type="text" placeholder="Payment Type" name="payment_type" value="Cash On Delivery" ></div>
                     <div class="feild order-type">Order Type*
                         <select name="OrderType" >
-                            <option value="DiningIn">Dining In</option>
+                            <option value="Dining In">Dining In</option>
                             <option value="TakeAway">TakeAway</option>
+                            <option value="Delivery">Delivery</option>
                         </select>
                     </div>
                 </div>
@@ -107,7 +108,11 @@
                 
                 <div class="DetailBox">
                     <div>Total</div>
+                    {% if order.order_status == orderStatus %}
                     <div>${{order.total_price}}</div>
+                    {% else %}
+                    <div>$0</div>
+                    {% endif %}
                 </div>
                 
                 
@@ -142,7 +147,13 @@
         </div>
 
 
-
+<script>
+    window.onload = function() {
+            if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+                location.reload();
+            }
+        };
+</script>
 
 
 

@@ -5,6 +5,8 @@ from django.http import JsonResponse
 from datetime import date as realdate, datetime
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
+from django.views.decorators.cache import never_cache
+from django.db.models import Q
 from .models import *
 
 
@@ -103,6 +105,7 @@ def home(request, *args, **kwargs):
     context = {'categories': categories}
     return render(request, 'customer/home.html', context)
 
+@never_cache
 @login_required(login_url='signup')
 def cart(request):
     if request.user.is_authenticated:
@@ -399,15 +402,17 @@ def categories_card(request, *args, **kwargs):
 
     return render(request, 'customer/cards.html', context)
 
-
+@never_cache
+@login_required(login_url='signup')
 def checkout(request):
     if request.user.is_authenticated:
         user_email = request.user.email
         user = User.objects.get(email=user_email)
         categories = Category.objects.all()
         order = Order.objects.filter(user=user).latest('order_date')
-        context = {"user":user, "order":order, 'categories':categories} 
+        
         orderStatus_pending = OrderStatus.objects.get(order_status_type='pending')
+        context = {"user":user, "order":order, 'categories':categories, "orderStatus":orderStatus_pending} 
         if order.order_status == orderStatus_pending:
             order_item = OrderItem.objects.filter(order=order)
             context["order_item"] = order_item
@@ -430,12 +435,50 @@ def checkout(request):
             Payment.objects.create(address=address, contact_no=contactno, city=city, payment_type=payment_type, order=order, user=user)
 
             print("Successfully")
-            return redirect("checkout")
-            
+            return redirect("order-tables-user")
+
+    print(order.total_price)     
 
 
     return render(request, 'customer/checkout.html', context)
 
+
+@login_required(login_url='signup')
+def order_tables_user(request):
+    categories = Category.objects.all()
+    context = {"categories":categories}
+
+    if request.user.is_authenticated:
+        user_email = request.user.email
+        user = User.objects.get(email=user_email)
+        # orders = Order.objects.filter(user=user)
+        orderstatus_pending = OrderStatus.objects.get(order_status_type='pending')
+        orders = Order.objects.filter(Q(user=user) & ~Q(order_status=orderstatus_pending))
+        context["orders"] = orders
+        total_items = 0
+
+        # Iterate over each order and count the related order items
+        for order in orders:
+            orderitem = OrderItem.objects.filter(order=order).count()
+            
+            total_items += orderitem
+
+        # Add the total count to the context
+        context['qnt'] = total_items
+
+        # Debugging output (optional)
+        print(total_items, orders) 
+        
+    return render(request,'customer/order_statistic.html', context)
+
 ######################################### RECIPTIONIST/MANAGER #######################################
 
 
+def kitchen_home(request):
+    return render(request, 'manager/kitchen_home.html')
+
+def orders_kitchen(request):
+    return render(request, 'manager/order_kitchen.html')
+
+def orders_detail(request):
+    return render(request, 'manager/order_detail.html')

@@ -1,0 +1,92 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    /* background-color: rgb(23, 22, 34); */
+}
+
+
+.TableHeading{
+    text-align: center;
+    padding: 1rem 0rem;
+    font-weight: 700;
+    color: white;
+    font-size: 1.5rem;
+
+
+}
+table{
+    /* change with to 100% if you want table on full screen  */
+    width: 50rem;
+    width: 95%;
+
+
+    border: 2px solid rgb(212, 212, 212);
+    margin: auto;
+    border-spacing: 1px;
+
+    /* Uncommit if you want no seperate borders for each cell */
+    /* border-collapse: collapse; */
+}
+
+
+.Tablecontainer{
+    overflow-x: auto;      /* for table responsiveness */
+    padding: 1rem 0rem;
+}
+
+
+th , td{
+    padding: 0.6rem 0.8rem;
+    text-align: center;
+    background-color: aquamarine;
+    border-bottom: 2px solid rgb(0, 0, 0);
+    border-spacing: 20px;
+    /* background-color: rgb(51, 49, 50); */
+    background-color: rgb(44, 44, 61);
+    color: white;
+}
+
+th{
+    background-color: rgb(31, 29, 30);
+}
+
+th:hover,td:hover{
+    background-color: #02b0eb;
+    color: white;
+    transform: scale(1.01);
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0.5rem 0.7rem;
+}
+
+.wrapper{
+    border-radius: 10px;
+    
+}
+
+.ord_td{
+    padding:0.25rem;
+}
+.ord_td:hover{
+    background-color: rgb(44, 44, 61);
+    transform: scale(1);
+    
+}
+
+.Orderstatus{
+    padding: 0.6rem 0rem;
+    border: 1px solid white;
+    border-radius: 0.9rem;
+    /* display:block; */
+    width: 60%;
+    /* height: 50%; */
+    margin: auto;
+}
+
+
+
+
+
+
+

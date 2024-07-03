@@ -1,0 +1,100 @@
+{% extends 'base/basic.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'customer_css/OrderStats.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+   
+   .TableHeading{
+    margin-top:8rem;
+   }
+</style>
+
+<section class="main">
+    <div class="wrapper">
+        <div class="TableHeading">Order History</div>
+        <div class="Tablecontainer">
+            <table class="OrderTable" >
+                <thead class="Thead">
+                    <tr class="StatsHeading">
+                        <th>Order ID</th>
+                        <th>Order Status</th>
+                        <th>Order Date</th>
+                        <th>Order Type</th>
+                        <th>Total Menu</th>
+                    </tr>
+                </thead>
+
+                <tbody class="Tbody">
+                    {% for order in orders %}
+                    <tr class="StatsData">
+                        <td>{{order.id}}</td>
+                        <td class="ord_td"><div class="Orderstatus">{{order.order_status}}</div></td>
+                        <td>{{order.order_date}}</td>
+                        <td>{{order.order_type}}</td>
+                        <td>
+                            {% comment %}
+                            Calculate the count of order items for this specific order
+                            {% endcomment %}
+                            {% with order.orderitem_set.all|length as qnt %}
+                                {{ qnt }}
+                            {% endwith %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                    <!-- <tr class="StatsData">
+                        <td>222</td>
+                        <td class="ord_td"><div class="Orderstatus">Pending</div></td>
+                        <td>02-July-2024</td>
+                        <td>7 items</td>
+                    </tr>
+
+                    <tr class="StatsData">
+                        <td>333</td>
+                        <td class="ord_td"><div class="Orderstatus">Delivered</div></td>
+                        <td>03-July-2024</td>
+                        <td>1 items</td>
+                    </tr>
+
+                    <tr class="StatsData">
+                        <td>444</td>
+                        <td class="ord_td"><div class="Orderstatus">Failed</div></td>
+                        <td>04-July-2024</td>
+                        <td>3 items</td>
+                    </tr>
+
+                    <tr class="StatsData">
+                        <td>555</td>
+                        <td class="ord_td"><div class="Orderstatus">Expired</div></td>
+                        <td>04-July-2024</td>
+                        <td>3 items</td>
+                    </tr>
+
+                    <tr class="StatsData">
+                        <td>666</td>
+                        <td class="ord_td"><div class="Orderstatus">Delivered</div></td>
+                        <td>08-July-2024</td>
+                        <td>12 items</td>
+                    </tr>
+
+                    <tr class="StatsData">
+                        <td>666</td>
+                        <td class="ord_td"><div class="Orderstatus">Delivered</div></td>
+                        <td>08-July-2024</td>
+                        <td>12 items</td>
+                    </tr> -->
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<script src="{% static 'javascript/OrderStats.js' %}" ></script>
+{% endblock %}

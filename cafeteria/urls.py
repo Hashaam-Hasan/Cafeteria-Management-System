@@ -19,4 +19,8 @@ urlpatterns = [
     path('add-to-cart/', Add_to_Cart, name="add-to-cart"),
     path('card_description/<str:menu_name>', card_description, name="card_description"),
     path('checkout', checkout, name="checkout"),
+    path('order-tables-user/', order_tables_user, name="order-tables-user"),
+    path('manager-kitchen/', kitchen_home, name="manager-kitchen"),
+    path('order-kitchen/', orders_kitchen, name="order-kitchen"),
+    path('order-detail/', orders_detail, name="order-detail"),
 ]

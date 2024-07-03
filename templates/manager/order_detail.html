@@ -1,0 +1,56 @@
+{% extends 'base/basic_kitchen.html' %}
+{% load static %}
+{% block content %}
+<div class="customer_details">
+    <h1>Order Detail<span class="underline-head"></span></h1>
+
+    <div class="customer_detail">
+        <h4>Muhammad Owais</h4>
+        <h4>Customer ID: 3333</h4>
+        <h4>Order ID: 3333</h4>
+    </div>
+</div>
+
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Product Name</th>
+                <th>QUNATITY</th>
+                <th>STATUS</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><img src="{% static 'images/fry.jpg' %}" alt="" width="50px" height="50px"></td>
+                <td>French Fries</td>
+                <td>4</td>
+                <td>
+                    <select name="status" id="status" class="select_status">
+                        <option value="pending">Pending</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="on_delivery">On Delivery</option>
+                      </select>
+
+                </td>
+            </tr>
+            <tr>
+                <td><img src="{% static 'images/fry.jpg' %}" alt="" width="50px" height="50px"></td>
+                <td>French Fries</td>
+                <td>4</td>
+                <td>
+                    <select name="status" id="status" class="select_status">
+                        <option value="pending">Pending</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="on_delivery">On Delivery</option>
+                      </select>
+
+                </td>
+            </tr>
+           
+        </tbody>
+    </table>
+</div>
+{% endblock %}
