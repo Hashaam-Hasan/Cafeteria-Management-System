@@ -5,9 +5,9 @@
     <h1>Order Detail<span class="underline-head"></span></h1>
 
     <div class="customer_detail">
-        <h4>Muhammad Owais</h4>
-        <h4>Customer ID: 3333</h4>
-        <h4>Order ID: 3333</h4>
+        <h4>{{user.f_name}}  {{user.l_name}}</h4>
+        <h4>Customer ID: {{user.id}}</h4>
+        <h4>Order ID: {{order_id}}</h4>
     </div>
 </div>
 
@@ -19,36 +19,23 @@
                 <th></th>
                 <th>Product Name</th>
                 <th>QUNATITY</th>
-                <th>STATUS</th>
+                
             </tr>
         </thead>
         <tbody>
+            {% for orderItem in OrderItems %}
             <tr>
+                <td><img src="{{orderItem.menu.menu_image.url}}" alt="" width="70px" height="70px"></td>
+                <td>{{orderItem.menu.menu_name}}</td>
+                <td>{{orderItem.order_item_quantity}}</td>
+            </tr>
+            {% endfor %}
+            <!-- <tr>
                 <td><img src="{% static 'images/fry.jpg' %}" alt="" width="50px" height="50px"></td>
                 <td>French Fries</td>
                 <td>4</td>
-                <td>
-                    <select name="status" id="status" class="select_status">
-                        <option value="pending">Pending</option>
-                        <option value="delivered">Delivered</option>
-                        <option value="on_delivery">On Delivery</option>
-                      </select>
-
-                </td>
-            </tr>
-            <tr>
-                <td><img src="{% static 'images/fry.jpg' %}" alt="" width="50px" height="50px"></td>
-                <td>French Fries</td>
-                <td>4</td>
-                <td>
-                    <select name="status" id="status" class="select_status">
-                        <option value="pending">Pending</option>
-                        <option value="delivered">Delivered</option>
-                        <option value="on_delivery">On Delivery</option>
-                      </select>
-
-                </td>
-            </tr>
+            
+            </tr> -->
            
         </tbody>
     </table>

@@ -1,6 +1,15 @@
 {% extends 'base/basic_kitchen.html' %}
 
 {% block content %}
+
+<style>
+    .disabled-link {
+        pointer-events: none;
+        cursor: default;
+        color: gray; /* Optional: make it visually clear that the link is disabled */
+    }
+</style>
+
 <div class="dashboard">
     <div class="container">
         <div class="content">
@@ -40,9 +49,9 @@
 <div class="inventory-head">
     <h3>Inventory<span class="underline-head"></span></h3>
     <div class="inv-btn">
-        <a href="" class="in-stock">In Stock</a>
-        <a href="" class="out-stock">Out Of Stock</a>
-        <a href="" class="pending-stock">Pending</a>
+        <a href="#" class="in-stock">In Stock</a>
+        <a href="#" class="out-stock">Out Of Stock</a>
+        <a href="#" class="pending-stock">Pending</a>
     </div>
 </div>
 
@@ -53,38 +62,86 @@
                 <th>Product Name</th>
                 <th>MAX STOCK LEVEL</th>
                 <th>MIN STOCK LEVEL</th>
-                <th>STATUS</th>
                 <th>QUANTITY</th>
+                <th>STATUS</th>
                 <th>NEED RESTOCK</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="inv-detail">
+            {% for inventory in inventories %}
             <tr>
-                <td>Product A</td>
-                <td>100</td>
-                <td>10</td>
-                <td><span class="status pending">Pending</span></td>
-                <td>5</td>
-                <td><a href="">Restock</a></td>
-            </tr>
-            <tr>
-                <td>Product B</td>
-                <td>200</td>
-                <td>20</td>
-                <td><span class="status stock">In Stock</span></td>
-                <td>150</td>
-                <td><a href="">Restock</a></td>
-            </tr>
-            <tr>
-                <td>Product C</td>
-                <td>150</td>
-                <td>15</td>
+                <td>{{inventory.menu.menu_name}}</td>
+                <td>{{inventory.max_level_stock}}</td>
+                <td>{{inventory.min_level_stock}}</td>
+                <td>{{inventory.inventory_quantity}}</td>
+                {% if inventory.inventory_quantity < inventory.min_level_stock %}
                 <td><span class="status out-stock">Out Of Stock</span></td>
-                <td>10</td>
-                <td><a href="">Restock</a></td>
+                <td><a href="#" class="out-of-stock" data-item-name="{{inventory.menu.id}}" data-item-qnt="{{inventory.inventory_quantity}}">Restock</a></td>
+                {% else %}
+                <td><span class="status stock">In Stock</span></td>
+                <td><a href="#" class="disabled-link">Restock</a></td>
+                {% endif %}
             </tr>
-            <!-- Repeat rows as needed -->
+            {% endfor %}
         </tbody>
     </table>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Handle the restore inventory button click
+        document.querySelectorAll(".out-of-stock").forEach(restore_btn => {
+            restore_btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                let menu_item_id = restore_btn.getAttribute('data-item-name');
+                let item_inv = restore_btn.getAttribute('data-item-qnt');
+                
+                fetch(`/inventory-restore?menu-item-id=${menu_item_id}&item_inv=${item_inv}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            let context = data.context;
+                            let tableBody = document.querySelector('.inv-detail');
+                            let tableRow = Array.from(tableBody.querySelectorAll('tr')).find(row => {
+                                return row.querySelector(`.out-of-stock[data-item-name="${menu_item_id}"]`);
+                            });
+
+                            if (tableRow) {
+                                tableRow.querySelector('td:nth-child(4)').innerText = context.inventory_quantity;
+
+                                if (context.inventory_quantity < context.min_level_stock) {
+                                    let statusCell = tableRow.querySelector('.status');
+                                    statusCell.innerText = 'Out Of Stock';
+                                    statusCell.classList.remove('stock');
+                                    statusCell.classList.add('out-stock');
+                                    let restockLink = tableRow.querySelector('.out-of-stock');
+                                    restockLink.setAttribute('data-item-qnt', context.inventory_quantity);
+                                } else {
+                                    let statusCell = tableRow.querySelector('.status');
+                                    statusCell.innerText = 'In Stock';
+                                    statusCell.classList.remove('out-stock');
+                                    statusCell.classList.add('stock');
+                                    let restockLink = tableRow.querySelector('.out-of-stock');
+                                    restockLink.classList.remove('out-of-stock');
+                                    restockLink.classList.add('disabled-link');
+                                    restockLink.setAttribute('href', '');
+                                    restockLink.removeAttribute('data-item-qnt');
+                                }
+
+                                
+                            }
+                        } else {
+                            console.error(data.error);
+                            
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        
+                    });
+            });
+        });
+    });
+</script>
+
 </div>
 {% endblock %}

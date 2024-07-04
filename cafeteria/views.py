@@ -7,13 +7,25 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.views.decorators.cache import never_cache
 from django.db.models import Q
+from .decorators import *
 from .models import *
 
 
 # Create your views here.
 
+def restricted_page(request):
+    return render(request, 'customer/restricted_page.html')
 
-
+# def customer_restriction(req):
+#     if req.user.is_authenticated:
+#         user_email = req.user.email
+#         user = User.objects.get(email=user_email)
+#         role = Role.objects.get(role_name="Customer")
+#         print(user.role)
+#         if user.role == role:
+#             print("E")
+#             return redirect("restricted-page")
+#     return None
 
 ###################################  USER AUTHENTICATION ###################################
 def signup(request):
@@ -32,16 +44,18 @@ def signup(request):
         #Trying to get the latest user id in order to make new custom id for customer
         #Format CUS****
         try:
-            last_object = User.objects.latest('id')
+            last_object = User.objects.filter(id__contains="CUS").latest('user') 
+            print(last_object)
             last_id = last_object.id
             val = last_id[3:]
             val = str(int(val) + 1).zfill(4)  # Ensure the ID remains 4 digits
-        except ObjectDoesNotExist:
+        except Exception as e:
+            print(e, "Enye")
             val = "0001"  # Starting value for the first user
         
         customer_id = "CUS" + val
 
-
+        print(customer_id)
         role_type = Role.objects.get(role_name='Customer')
 
         
@@ -81,7 +95,7 @@ def signin(request, *args, **kwargs):
             elif sign_in_type.lower() == 'admin':
                 pass
             elif sign_in_type.lower() == 'manager':
-                pass
+                return redirect("manager-kitchen")
         else:
             return render(request, 'accounts/sign_in_up.html', {'error': 'Invalid-Credentials'})
     return render(request, 'accounts/sign_in_up.html')
@@ -167,7 +181,7 @@ def cart_quantity_add(request):
 
                 
 
-                if order_item[0].order_item_quantity-int(query_quantity) != 0:
+                if order_item[0].order_item_quantity-int(query_quantity) != 0: # 6 -  5 = 1 
                     inventory = Inventory.objects.get(menu=menu)
                     inventory.inventory_quantity -= (int(query_quantity)-order_item[0].order_item_quantity)
                     # print(inventory.inventory_quantity)
@@ -240,7 +254,7 @@ def remove_item(request):
     order_item_id = request.GET.get("orderItemId")
     print(order_item_id)
     menu_name = OrderItem.objects.filter(id=order_item_id)[0].order_item_name
-    qnt = OrderItem.objects.filter(id=order_item_id)[0].order_item_quantity
+    qnt = OrderItem.objects.filter(id=order_item_id)[0].order_item_quantity #[obj]
     OrderItem.objects.filter(id=order_item_id).delete()
     user_email = request.user.email #Getting user email who is login in the corresponding sessions
     user = User.objects.get(email = user_email)
@@ -261,7 +275,9 @@ def remove_item(request):
 #Add To Cart Funcionality
 @login_required(login_url='signup')
 def Add_to_Cart(request):
+    
     if request.user.is_authenticated:
+        
         query = request.GET.get('menu-name')
         query1 = request.GET.get('cart-quantity') 
         
@@ -305,6 +321,13 @@ def Add_to_Cart(request):
                         update_order_total_wt_f(latest_order) 
                         return JsonResponse({"success":"Successfully Added", "check":False})
                 else:
+                    
+                    new_order = Order.objects.create(user=user, total_price=menu_item.price, order_status=order_status)
+                    new_order_item = OrderItem.objects.create(menu = menu_item, 
+                            order_item_name = menu_item.menu_name,order = new_order, order_item_quantity = 1,
+                            order_item_total_price = menu_item.price)
+                    return JsonResponse({"success":"Successfully Created", "check":False})
+            else:
                     
                     new_order = Order.objects.create(user=user, total_price=menu_item.price, order_status=order_status)
                     new_order_item = OrderItem.objects.create(menu = menu_item, 
@@ -447,10 +470,10 @@ def checkout(request):
 def order_tables_user(request):
     categories = Category.objects.all()
     context = {"categories":categories}
-
+    
     if request.user.is_authenticated:
         user_email = request.user.email
-        user = User.objects.get(email=user_email)
+        user = User.objects.get(email=request.user)
         # orders = Order.objects.filter(user=user)
         orderstatus_pending = OrderStatus.objects.get(order_status_type='pending')
         orders = Order.objects.filter(Q(user=user) & ~Q(order_status=orderstatus_pending))
@@ -467,18 +490,179 @@ def order_tables_user(request):
         context['qnt'] = total_items
 
         # Debugging output (optional)
-        print(total_items, orders) 
+        
         
     return render(request,'customer/order_statistic.html', context)
 
 ######################################### RECIPTIONIST/MANAGER #######################################
 
-
+@restrict_customer
+@login_required(login_url='signup')
 def kitchen_home(request):
-    return render(request, 'manager/kitchen_home.html')
+    if request.user.is_authenticated:
+        manager = User.objects.get(email=request.user.email)
+        inventories = Inventory.objects.all()
+        print(inventories, manager)
+        context = {"manager":manager, 'inventories':inventories}
+    return render(request, 'manager/kitchen_home.html', context)
 
+@restrict_customer
+@login_required(login_url='signup')
 def orders_kitchen(request):
-    return render(request, 'manager/order_kitchen.html')
+    if request.user.is_authenticated:
+        results = []
+        manager = User.objects.get(email=request.user.email)
+        orderStatus = OrderStatus.objects.get(order_status_type='pending')
+        orders = Order.objects.filter(~Q(order_status=orderStatus)).order_by('-order_date')
+        for order in orders:
+            user = User.objects.get(email=order.user)
+            orderItem_count = OrderItem.objects.filter(order=order).count()
+            # print(order_count)
+            payment = Payment.objects.filter(order=order, user=user)[0]
+            # print(user, order, payment)
+            results.append({
+                "order":order,
+                "payment":payment,
+                "user":user,
+                "order_menu_qnt": orderItem_count
+            })
+        context = {"manager":manager, "results":results}
+    return render(request, 'manager/order_kitchen.html', context)
 
-def orders_detail(request):
-    return render(request, 'manager/order_detail.html')
+@restrict_customer
+@login_required(login_url='signup')
+def orders_detail(request, *args, **kwargs):
+    if request.user.is_authenticated:
+        manager = User.objects.get(email=request.user.email)  
+        order_id = kwargs['order_id']
+        user_id = kwargs['user_id']
+        orderItems = OrderItem.objects.filter(order=Order.objects.get(id=order_id))
+        context = {"manager":manager, "OrderItems": orderItems, "user":User.objects.get(id=user_id), 'order_id':order_id}
+    return render(request, 'manager/order_detail.html', context)
+
+
+def search_order_by_order_id(request):
+    order_id = int(request.GET.get("order_id"))
+    if Order.objects.filter(id = order_id).exists():
+        order = Order.objects.filter(id = order_id)
+        payment = Payment.objects.get(order=order[0], user=User.objects.get(id=order[0].user.id))
+        
+        order_details = [
+            {
+                "order_id":ord.id,
+                "customer_id":ord.user.id,
+                "order_date":ord.order_date,
+                "order_status":ord.order_status.order_status_type,
+                "orderItem_qnt":OrderItem.objects.filter(order=ord).count()
+            }
+            for ord in order
+        ]
+
+        payment_detail = [
+            {
+                "address":payment.address,
+                "contact_no":payment.contact_no
+            }
+        ]
+
+        context = [
+            {
+                "order":order_details,
+                "payment":payment_detail
+            }
+        ]
+
+
+    
+        return JsonResponse({'success': 'success', 'context': context})
+    return JsonResponse({'error': 'No Order by The Searched ID'})
+
+def sort_by_btn(request):
+    if request.user.is_authenticated:
+        sort_type = request.GET.get('sort-type')
+        if sort_type.lower().strip() == 'all':
+            orderStatus = OrderStatus.objects.get(order_status_type='pending')
+            orders = Order.objects.filter(~Q(order_status=orderStatus)).order_by('-order_date')
+            if orders:
+                results = []
+                for order in orders: 
+                    payment = Payment.objects.get(order=order)
+                    results.append({
+                        "order_id": order.id,
+                        "customer_id": order.user.id,
+                        "order_date": order.order_date,
+                        "order_status": order.order_status.order_status_type,
+                        "orderItem_qnt": order.orderitem_set.count(),
+                        "payment": {
+                            "address": payment.address,
+                            "contact_no": payment.contact_no
+                        }
+                    })
+
+                
+
+                    
+                
+                return JsonResponse({"success":"success", "context":results})  
+            return JsonResponse({'error': 'No Order'})
+        
+        
+        orderStatus = OrderStatus.objects.get(order_status_type=sort_type.lower().strip())
+        print(orderStatus)
+        if Order.objects.filter(order_status=orderStatus).exists():
+            orders = Order.objects.filter(order_status=orderStatus)
+            # payment = Payment.objects.get(order=orders)
+
+            results = []
+            for order in orders:
+                payment = Payment.objects.get(order=order)
+                results.append({
+                    "order_id": order.id,
+                    "customer_id": order.user.id,
+                    "order_date": order.order_date,
+                    "order_status": order.order_status.order_status_type,
+                    "orderItem_qnt": order.orderitem_set.count(),
+                    "payment": {
+                        "address": payment.address,
+                        "contact_no": payment.contact_no
+                    }
+                })
+
+            
+
+                
+            
+            return JsonResponse({"success":"success", "context":results})  
+        return JsonResponse({'error': 'No Order'})
+
+def Inventory_Restore(request):
+
+    if request.user.is_authenticated:
+        itm_inv = request.GET.get('item_inv')
+        menu_item_id = request.GET.get('menu-item-id')
+        menu = MenuItem.objects.get(id=menu_item_id)
+
+        print(menu_item_id)
+
+
+        if Inventory.objects.filter(menu=menu).exists():
+            inventory = Inventory.objects.filter(menu=menu)[0]
+
+            inventory.inventory_quantity = inventory.max_level_stock
+            inventory.save()
+            
+            context = {
+            "inventory_name": menu.menu_name,
+            "inventory_quantity": inventory.inventory_quantity,
+            "max_level_stock": inventory.max_level_stock,
+            "min_level_stock": inventory.min_level_stock,
+            }
+            return JsonResponse({"success": "success", "context": context})
+            
+            
+
+             
+        else:
+            return JsonResponse({"error": "Something Went Wrong!"})
+
+    return JsonResponse({"success":"success"})

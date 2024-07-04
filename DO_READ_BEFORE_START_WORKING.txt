@@ -16,3 +16,7 @@ You should be in the base directory in which venv folder exist otherwise it will
 	password  -> test
 4- django, pillow, pymysql, sqlclient
 
+5- Manager Credentials
+	email --> JohnSmith@gmail.com
+	pwd --> John@1234
+

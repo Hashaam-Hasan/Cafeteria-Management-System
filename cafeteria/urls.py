@@ -22,5 +22,9 @@ urlpatterns = [
     path('order-tables-user/', order_tables_user, name="order-tables-user"),
     path('manager-kitchen/', kitchen_home, name="manager-kitchen"),
     path('order-kitchen/', orders_kitchen, name="order-kitchen"),
-    path('order-detail/', orders_detail, name="order-detail"),
+    path('order-detail/<int:order_id>/<str:user_id>/', orders_detail, name="order-detail"),
+    path('restricted-page/', restricted_page, name="restricted-page"),
+    path('search-order-by-order-id/', search_order_by_order_id, name="search-order-by-order-id"),
+    path('sort-by-btn/', sort_by_btn, name="sort-by-btn"),
+    path('inventory-restore/', Inventory_Restore, name="inventory-restore"),
 ]

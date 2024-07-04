@@ -31,14 +31,14 @@
 
     <div class="offcanvas">
         <div class="offcanvas-sidebar">
-            <h2>Recipionist</h2>
+            <h2>Welcome {{manager.f_name}} {{manager.l_name}}</h2>
             <div class="content">
                 <nav>
                     <li><a href="{% url 'manager-kitchen' %}">Dashboard</a></li>
                     <li><a href="{% url 'order-kitchen' %}">Orders</a></li>
                 </nav>
                 <nav>
-                    <li><a href="">Log Out</a></li>
+                    <li><a href="{% url 'signout' %}">Log Out</a></li>
                 </nav>
             </div>
         </div>

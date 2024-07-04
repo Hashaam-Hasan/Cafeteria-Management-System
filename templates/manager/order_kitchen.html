@@ -10,16 +10,16 @@
     <div class="sort-search-order">
         <div class="search-form">
             <form action="#" method="get">
-                <input type="text" name="search" placeholder="Search Order by Order ID...">
-                <button type="submit">Search</button>
+                <input type="text" class="search-order-query" name="search" placeholder="Search Order by Order ID...">
+                <button type="submit" class="search-order-id">Search</button>
             </form>
         </div>
 
 
         <div class="sort-btn">
-            <a href="" class="Pending">Pending</a>
-            <a href="" class="On-Delivery">On Delivery</a>
-            <a href="" class="Delivered">Delivered</a>
+            <a style="cursor: pointer;" class="On-Delivery btn-sort">All</a>
+            <a href="#" class="Pending btn-sort">Process</a>
+            <a href="#" class="Delivered btn-sort">Delivered</a>
         </div>
 
 
@@ -35,37 +35,129 @@
                 <th>Order ID</th>
                 <th>Customer ID</th>
                 <th>Address</th>
+                <th>Contact No</th>
+                <th>Order Date</th>
                 <th>STATUS</th>
                 <th>QUANTITY</th>
                 <th>SHOW DETAILS</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="search-result">
+            {% for result in results %}
             <tr>
-                <td>1000</td>
-                <td>CS1000</td>
-                <td>ABC</td>
-                <td><span class="status pending">Pending</span></td>
-                <td>5</td>
-                <td><a href="{% url 'order-detail' %}">SHOW DETAILS</a></td>
+                <td>{{result.order.id}}</td>
+                <td>{{result.user.id}}</td>
+                <td>{{result.payment.address}}</td>
+                <td>{{result.payment.contact_no}}</td>
+                <td>{{result.order.order_date}}</td>
+                <td><span class="status {% if result.order.order_status.order_status_type == 'process' %}pending{% elif result.order.order_status.order_status_type == 'Delivered' %}stock{% endif %}">{{result.order.order_status.order_status_type}}</span></td>
+                <td>{{result.order_menu_qnt}}</td>
+                <td><a href="{% url 'order-detail' order_id=result.order.id user_id=result.user.id %}">SHOW DETAILS</a></td>
+
             </tr>
-            <tr>
-                <td>1001</td>
-                <td>CS1001</td>
-                <td>ABC</td>
-                <td><span class="status stock">Delivered</span></td>
-                <td>150</td>
-                <td><a href="{% url 'order-detail' %}">SHOW DETAILS</a></td>
-            </tr>
-            <tr>
-                <td>1002</td>
-                <td>CS1002</td>
-                <td>ABC</td> 
-                <td><span class="status out-stock">On Delivery</span></td>
-                <td>10</td>
-                <td><a href="{% url 'order-detail' %}">SHOW DETAILS</a></td>
-            </tr>
+            {% endfor %}
+            
         </tbody>
     </table>
+
+
+   
+<script>
+    let search_order_btn = document.querySelector(".search-order-id")
+    search_order_btn.addEventListener('click', (e)=>{
+        e.preventDefault()
+        let search_input_val = document.querySelector(".search-order-query").value
+        if (search_input_val) {
+            let promise = fetch(`/search-order-by-order-id?order_id=${search_input_val}`)
+            .then(response=>response.json())
+            .then(data => {
+                let orderResults = document.querySelector('.search-result');
+                orderResults.innerHTML = '';
+                if (data.success) {
+                            let context = data.context;
+                            
+                            let order = context[0].order[0];
+                            console.log(order, context[0].order[0])
+                            let payment = context[0].payment[0];
+
+                            let row = `<tr>
+                                <td>${order.order_id}</td>
+                                <td>${order.customer_id}</td>
+                                <td>${payment.address}</td>
+                                <td>${payment.contact_no}</td>
+                                <td>${order.order_date}</td>
+                                <td><span class="status ${order.order_status == 'process' ? 'pending' : order.order_status == 'Delivered' ? 'stock' : ''}">${order.order_status}</span></td>
+                                <td>${order.orderItem_qnt}</td>
+                                <td><a href="/order-detail/${order.order_id}/${order.customer_id}">SHOW DETAILS</a></td>
+                            </tr>`;
+                            orderResults.innerHTML += row;
+                }
+                else {
+                    console.log(":Error")
+                    let row = `${data.error}`
+                    orderResults.innerHTML += row;
+                }
+            })
+            .catch (error=>{
+                console.log(error)
+            })
+        }
+    })
+
+
+
+    // Handle sort button clicks
+    let sort_btns = document.querySelectorAll(".btn-sort");
+    console.log(sort_btns);
+
+    sort_btns.forEach((btn_sort) => {
+        console.log(btn_sort);
+        btn_sort.addEventListener('click', (e) => {
+            e.preventDefault();
+            let inner_content = btn_sort.innerHTML;
+            console.log(inner_content);
+
+            let promise = fetch(`/sort-by-btn?sort-type=${inner_content}`)
+            .then(response=>response.json())
+            .then(data=>{
+                let orderResults = document.querySelector('.search-result');
+                orderResults.innerHTML = '';
+                if (data.success) {
+                            let context = data.context;
+                            console.log(context)
+                            
+                            context.forEach((e)=>{
+                                console.log(e)
+                                let row = `<tr>
+                                <td>${e.order_id}</td>
+                                <td>${e.customer_id}</td>
+                                <td>${e.payment.address}</td>
+                                <td>${e.payment.contact_no}</td>
+                                <td>${e.order_date}</td>
+                                <td><span class="status ${e.order_status == 'process' ? 'pending' : e.order_status == 'Delivered' ? 'stock' : ''}">${e.order_status}</span></td>
+                                <td>${e.orderItem_qnt}</td>
+                                <td><a href="/order-detail/${e.order_id}/${e.customer_id}">SHOW DETAILS</a></td>
+                            </tr>`;
+                            orderResults.innerHTML += row;
+                            })
+            
+                }
+                else {
+                    console.log(":Error")
+                    let row = `${data.error}`
+                    orderResults.innerHTML += row;
+                }
+            })
+
+        });
+    });
+    
+  
+
+
+
+
+
+</script>
 </div>
 {% endblock %}
