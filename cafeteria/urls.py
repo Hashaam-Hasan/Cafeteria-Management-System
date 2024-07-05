@@ -27,4 +27,5 @@ urlpatterns = [
     path('search-order-by-order-id/', search_order_by_order_id, name="search-order-by-order-id"),
     path('sort-by-btn/', sort_by_btn, name="sort-by-btn"),
     path('inventory-restore/', Inventory_Restore, name="inventory-restore"),
+    path('change-order-status/', change_order_status, name="change-order-status"),
 ]

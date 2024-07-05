@@ -2,6 +2,14 @@
 {% load static %}
 
 {% block content %}
+
+<style>
+    .disabled-link {
+        pointer-events: none;
+        cursor: default;
+        color: gray; /* Optional: make it visually clear that the link is disabled */
+    }
+</style>
 <div class="order-body">
 
     <h1>Order's List<span class="underline-head"></span></h1>
@@ -19,7 +27,7 @@
         <div class="sort-btn">
             <a style="cursor: pointer;" class="On-Delivery btn-sort">All</a>
             <a href="#" class="Pending btn-sort">Process</a>
-            <a href="#" class="Delivered btn-sort">Delivered</a>
+            <a href="#" class="Delivered btn-sort">Completed</a>
         </div>
 
 
@@ -40,124 +48,144 @@
                 <th>STATUS</th>
                 <th>QUANTITY</th>
                 <th>SHOW DETAILS</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody class="search-result">
             {% for result in results %}
             <tr>
-                <td>{{result.order.id}}</td>
-                <td>{{result.user.id}}</td>
-                <td>{{result.payment.address}}</td>
-                <td>{{result.payment.contact_no}}</td>
-                <td>{{result.order.order_date}}</td>
-                <td><span class="status {% if result.order.order_status.order_status_type == 'process' %}pending{% elif result.order.order_status.order_status_type == 'Delivered' %}stock{% endif %}">{{result.order.order_status.order_status_type}}</span></td>
-                <td>{{result.order_menu_qnt}}</td>
+                <td>{{ result.order.id }}</td>
+                <td>{{ result.user.id }}</td>
+                <td>{{ result.payment.address }}</td>
+                <td>{{ result.payment.contact_no }}</td>
+                <td>{{ result.order.order_date }}</td>
+                <td><span class="status {% if result.order.order_status.order_status_type == 'process' %}pending{% elif result.order.order_status.order_status_type == 'completed' %}stock{% endif %}">{{ result.order.order_status.order_status_type }}</span></td>
+                <td>{{ result.order_menu_qnt }}</td>
                 <td><a href="{% url 'order-detail' order_id=result.order.id user_id=result.user.id %}">SHOW DETAILS</a></td>
-
+                <td><a href="#" style="padding: 1rem; text-transform: uppercase;" class="{% if result.order.order_status.order_status_type == 'completed' %}disabled-link{% else %}action-btn{% endif %}" data-order-id="{{ result.order.id }}">Completed</a></td>
             </tr>
             {% endfor %}
-            
         </tbody>
     </table>
 
+    <script>
+       
 
-   
-<script>
-    let search_order_btn = document.querySelector(".search-order-id")
-    search_order_btn.addEventListener('click', (e)=>{
-        e.preventDefault()
-        let search_input_val = document.querySelector(".search-order-query").value
-        if (search_input_val) {
-            let promise = fetch(`/search-order-by-order-id?order_id=${search_input_val}`)
-            .then(response=>response.json())
-            .then(data => {
-                let orderResults = document.querySelector('.search-result');
-                orderResults.innerHTML = '';
-                if (data.success) {
-                            let context = data.context;
-                            
-                            let order = context[0].order[0];
-                            console.log(order, context[0].order[0])
-                            let payment = context[0].payment[0];
+        document.addEventListener('DOMContentLoaded', function() {
+    let searchOrderBtn = document.querySelector(".search-order-id");
+    searchOrderBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        let searchInputVal = document.querySelector(".search-order-query").value;
+        if (searchInputVal) {
+            fetch(`/search-order-by-order-id?order_id=${searchInputVal}`)
+                .then(response => response.json())
+                .then(data => {
+                            let orderResults = document.querySelector('.search-result');
+                            orderResults.innerHTML = '';
+                            if (data.success) {
+                                let context = data.context;
+                                let order = context[0].order[0];
+                                let payment = context[0].payment[0];
 
-                            let row = `<tr>
-                                <td>${order.order_id}</td>
-                                <td>${order.customer_id}</td>
-                                <td>${payment.address}</td>
-                                <td>${payment.contact_no}</td>
-                                <td>${order.order_date}</td>
-                                <td><span class="status ${order.order_status == 'process' ? 'pending' : order.order_status == 'Delivered' ? 'stock' : ''}">${order.order_status}</span></td>
-                                <td>${order.orderItem_qnt}</td>
-                                <td><a href="/order-detail/${order.order_id}/${order.customer_id}">SHOW DETAILS</a></td>
-                            </tr>`;
-                            orderResults.innerHTML += row;
-                }
-                else {
-                    console.log(":Error")
-                    let row = `${data.error}`
-                    orderResults.innerHTML += row;
-                }
-            })
-            .catch (error=>{
-                console.log(error)
-            })
-        }
-    })
+                                let orderDate = new Date(order.order_date);
+                                let formattedDate = orderDate.toLocaleString('en-US', {
+                                    month: 'long',
+                                    day: 'numeric',
+                                    year: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                    hour12: true
+                                });
 
-
-
-    // Handle sort button clicks
-    let sort_btns = document.querySelectorAll(".btn-sort");
-    console.log(sort_btns);
-
-    sort_btns.forEach((btn_sort) => {
-        console.log(btn_sort);
-        btn_sort.addEventListener('click', (e) => {
-            e.preventDefault();
-            let inner_content = btn_sort.innerHTML;
-            console.log(inner_content);
-
-            let promise = fetch(`/sort-by-btn?sort-type=${inner_content}`)
-            .then(response=>response.json())
-            .then(data=>{
-                let orderResults = document.querySelector('.search-result');
-                orderResults.innerHTML = '';
-                if (data.success) {
-                            let context = data.context;
-                            console.log(context)
-                            
-                            context.forEach((e)=>{
-                                console.log(e)
                                 let row = `<tr>
-                                <td>${e.order_id}</td>
-                                <td>${e.customer_id}</td>
-                                <td>${e.payment.address}</td>
-                                <td>${e.payment.contact_no}</td>
-                                <td>${e.order_date}</td>
-                                <td><span class="status ${e.order_status == 'process' ? 'pending' : e.order_status == 'Delivered' ? 'stock' : ''}">${e.order_status}</span></td>
-                                <td>${e.orderItem_qnt}</td>
-                                <td><a href="/order-detail/${e.order_id}/${e.customer_id}">SHOW DETAILS</a></td>
-                            </tr>`;
-                            orderResults.innerHTML += row;
-                            })
-            
+                                    <td>${order.order_id}</td>
+                                    <td>${order.customer_id}</td>
+                                    <td>${payment.address}</td>
+                                    <td>${payment.contact_no}</td>
+                                    <td>${formattedDate}</td>
+                                    <td><span class="status ${order.order_status == 'process' ? 'pending' : order.order_status == 'completed' ? 'stock' : ''}">${order.order_status}</span></td>
+                                    <td>${order.orderItem_qnt}</td>
+                                    <td><a href="/order-detail/${order.order_id}/${order.customer_id}">SHOW DETAILS</a></td>
+                                    <td><a href="#" style="padding: 1rem; text-transform: uppercase;" class="${order.order_status == 'completed' ? 'disabled-link' : 'action-btn'}" data-order-id="${order.order_id}">Completed</a></td>
+                                </tr>`;
+                                orderResults.innerHTML += row;
+                            } else {
+                                orderResults.innerHTML = `<tr><td colspan="9">${data.error}</td></tr>`;
+                            }
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
                 }
-                else {
-                    console.log(":Error")
-                    let row = `${data.error}`
-                    orderResults.innerHTML += row;
-                }
-            })
+            });
+        
+    
 
+    function updateOrderResults(data) {
+        let orderResults = document.querySelector('.search-result');
+        orderResults.innerHTML = '';
+        if (data.success) {
+            let results = data.context;
+            results.forEach(context => {
+                let orderDate = new Date(context.order_date);
+                let formattedDate = orderDate.toLocaleString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true
+                });
+
+                let row = `<tr>
+                    <td>${context.order_id}</td>
+                    <td>${context.customer_id}</td>
+                    <td>${context.address}</td>
+                    <td>${context.contact_no}</td>
+                    <td>${formattedDate}</td>
+                    <td><span class="status ${context.order_status == 'process' ? 'pending' : context.order_status == 'completed' ? 'stock' : ''}">${context.order_status}</span></td>
+                    <td>${context.orderItem_count}</td>
+                    <td><a href="/order-detail/${context.order_id}/${context.customer_id}">SHOW DETAILS</a></td>
+                    <td><a href="#" style="padding: 1rem; text-transform: uppercase;" class="${context.order_status == 'completed' ? 'disabled-link' : 'action-btn'}" data-order-id="${context.order_id}">Completed</a></td>
+                </tr>`;
+                orderResults.innerHTML += row;
+            });
+        } else {
+            orderResults.innerHTML = `<tr><td colspan="9">${data.error}</td></tr>`;
+        }
+    }
+
+    let sortBtns = document.querySelectorAll(".btn-sort");
+    sortBtns.forEach(btnSort => {
+        btnSort.addEventListener('click', function(e) {
+            e.preventDefault();
+            let innerContent = btnSort.innerHTML;
+            fetch(`/sort-by-btn?sort-type=${innerContent}`)
+                .then(response => response.json())
+                .then(data => updateOrderResults(data))
+                .catch(error => console.error(error));
         });
     });
-    
-  
+
+    // Event delegation for dynamically added elements
+    document.querySelector('.table-container').addEventListener('click', function(e) {
+        if (e.target.classList.contains('action-btn')) {
+            e.preventDefault();
+            let orderId = e.target.getAttribute('data-order-id');
+            fetch(`/change-order-status?order-id=${orderId}`)
+                .then(response => response.json())
+                .then(data => updateOrderResults(data))
+                .catch(error => console.error(error));
+        }
+    });
+});
 
 
 
 
 
-</script>
+
+    </script>
 </div>
+
 {% endblock %}

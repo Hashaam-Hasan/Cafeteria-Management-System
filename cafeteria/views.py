@@ -544,37 +544,42 @@ def orders_detail(request, *args, **kwargs):
 def search_order_by_order_id(request):
     order_id = int(request.GET.get("order_id"))
     if Order.objects.filter(id = order_id).exists():
-        order = Order.objects.filter(id = order_id)
-        payment = Payment.objects.get(order=order[0], user=User.objects.get(id=order[0].user.id))
         
-        order_details = [
-            {
-                "order_id":ord.id,
-                "customer_id":ord.user.id,
-                "order_date":ord.order_date,
-                "order_status":ord.order_status.order_status_type,
-                "orderItem_qnt":OrderItem.objects.filter(order=ord).count()
-            }
-            for ord in order
-        ]
+        order = Order.objects.filter(id = order_id)
+        print(order_id, order)
+        if Payment.objects.filter(order=order[0], user=User.objects.get(id=order[0].user.id)).exists():
+            payment = Payment.objects.get(order=order[0], user=User.objects.get(id=order[0].user.id))
+            
+            order_details = [
+                {
+                    "order_id":ord.id,
+                    "customer_id":ord.user.id,
+                    "order_date":ord.order_date,
+                    "order_status":ord.order_status.order_status_type,
+                    "orderItem_qnt":OrderItem.objects.filter(order=ord).count()
+                }
+                for ord in order
+            ]
 
-        payment_detail = [
-            {
-                "address":payment.address,
-                "contact_no":payment.contact_no
-            }
-        ]
+            payment_detail = [
+                {
+                    "address":payment.address,
+                    "contact_no":payment.contact_no
+                }
+            ]
 
-        context = [
-            {
-                "order":order_details,
-                "payment":payment_detail
-            }
-        ]
+            context = [
+                {
+                    "order":order_details,
+                    "payment":payment_detail
+                }
+            ]
 
 
-    
-        return JsonResponse({'success': 'success', 'context': context})
+        
+            return JsonResponse({'success': 'success', 'context': context})
+        else:
+            return JsonResponse({'error': 'This order ID is not placed Yet'})        
     return JsonResponse({'error': 'No Order by The Searched ID'})
 
 def sort_by_btn(request):
@@ -610,7 +615,7 @@ def sort_by_btn(request):
         orderStatus = OrderStatus.objects.get(order_status_type=sort_type.lower().strip())
         print(orderStatus)
         if Order.objects.filter(order_status=orderStatus).exists():
-            orders = Order.objects.filter(order_status=orderStatus)
+            orders = Order.objects.filter(order_status=orderStatus).order_by('-order_date')
             # payment = Payment.objects.get(order=orders)
 
             results = []
@@ -666,3 +671,102 @@ def Inventory_Restore(request):
             return JsonResponse({"error": "Something Went Wrong!"})
 
     return JsonResponse({"success":"success"})
+
+# def change_order_status(request):
+
+#     order_id = request.GET.get('order-id')
+
+#     if Order.objects.filter(id=order_id).exists():
+        
+#         orderStatus_completed = OrderStatus.objects.get(order_status_type='completed')
+#         order_ = Order.objects.get(id = order_id)
+#         order_.order_status = orderStatus_completed
+#         order_.save()
+
+
+
+#         results = []
+#         orderStatus = OrderStatus.objects.get(order_status_type='pending')
+#         orders = Order.objects.filter(~Q(order_status=orderStatus)).order_by('-order_date')
+#         for order in orders:
+#             print(order.order_status.order_status_type)
+#             if order.id == order_id:
+#                 print(order.order_status.order_status_type)
+
+#             user = User.objects.get(email=order.user)
+#             orderItem_count = OrderItem.objects.filter(order=order).count()
+#             # print(order_count)
+#             payment = Payment.objects.filter(order=order, user=user)[0]
+#             # print(user, order, payment)
+#             results.append({
+#                 "order_id":order.id,
+#                 "order_date":order.order_date,
+#                 "order_status":order.order_status.order_status_type,
+#                 "orderItem_count":OrderItem.objects.filter(order=order).count(),
+#                 "customer_id":order.user.id,
+#                 "address":payment.address,
+#                 "contact_no":payment.contact_no,
+#                 "user":user,
+#                 "order_menu_qnt": orderItem_count
+#             })
+#         context = {"results":results}
+
+
+#         return JsonResponse({"success":"success", "context":results})
+#     else:
+#         results = []
+#         orderStatus = OrderStatus.objects.get(order_status_type='pending')
+#         orders = Order.objects.filter(~Q(order_status=orderStatus)).order_by('-order_date')
+#         for order in orders:
+#             user = User.objects.get(email=order.user)
+#             orderItem_count = OrderItem.objects.filter(order=order).count()
+#             # print(order_count)
+#             payment = Payment.objects.filter(order=order, user=user)[0]
+#             # print(user, order, payment)
+#             results.append({
+#                 "order":order,
+#                 "payment":payment,
+#                 "user":user,
+#                 "order_menu_qnt": orderItem_count
+#             })
+#         context = {"results":results}
+#         return JsonResponse({"error":"Something Went Wrong", "context":results})
+
+   
+def change_order_status(request):
+    order_id = request.GET.get('order-id')
+
+    if not Order.objects.filter(id=order_id).exists():
+        return JsonResponse({"error": "Order not found"})
+
+    orderStatus_completed = OrderStatus.objects.get(order_status_type='completed')
+    order_ = Order.objects.get(id=order_id)
+    order_.order_status = orderStatus_completed
+    order_.save()
+
+    return get_order_context(request)
+
+def get_order_context(request):
+    results = []
+    orderStatus_pending = OrderStatus.objects.get(order_status_type='pending')
+    orders = Order.objects.filter(~Q(order_status=orderStatus_pending)).order_by('-order_date')
+    
+    for order in orders:
+        user = order.user
+        orderItem_count = OrderItem.objects.filter(order=order).count()
+        payment = Payment.objects.filter(order=order, user=user).first()
+
+        results.append({
+            "order_id": order.id,
+            "order_date": order.order_date,
+            "order_status": order.order_status.order_status_type,
+            "orderItem_count": orderItem_count,
+            "customer_id": user.id,
+            "address": payment.address if payment else "",
+            "contact_no": payment.contact_no if payment else "",
+            "user_email": user.email,
+            "order_menu_qnt": orderItem_count
+        })
+    
+    context = {"results": results}
+    return JsonResponse({"success": "success", "context": results})
