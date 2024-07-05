@@ -119,6 +119,8 @@ def home(request, *args, **kwargs):
     context = {'categories': categories}
     return render(request, 'customer/home.html', context)
 
+
+@customer_only_access
 @never_cache
 @login_required(login_url='signup')
 def cart(request):
@@ -142,6 +144,7 @@ def cart(request):
 
 
 #Manipulate quantity from cart page
+@customer_only_access
 @login_required(login_url='signup')
 def cart_quantity_add(request):
 
@@ -249,6 +252,7 @@ def update_order_total_wt_f(order): #Helper Function
     
 
 #Remove item from the cart
+@customer_only_access
 @login_required(login_url='signup')
 def remove_item(request):
     order_item_id = request.GET.get("orderItemId")
@@ -273,6 +277,7 @@ def remove_item(request):
 
 
 #Add To Cart Funcionality
+@customer_only_access
 @login_required(login_url='signup')
 def Add_to_Cart(request):
     
@@ -355,7 +360,7 @@ def card_description(request, *args, **kwargs):
     context = {'categories': categories, "menus": menu_item, 'stock':stock}
     return render(request, 'customer/card_description.html', context)
 
-
+@customer_only_access
 @login_required(login_url='signup')
 def reservation(request):
     slots = Slot.objects.all()
@@ -389,7 +394,7 @@ def reservation(request):
 
     return render(request, 'customer/reservation.html', context)
 
-
+@customer_only_access
 @login_required(login_url='signup')
 def reservation_detail(request):
     categories = Category.objects.all()
@@ -397,6 +402,8 @@ def reservation_detail(request):
     context = {'categories': categories, 'reservations':reservations}
     return render(request, 'customer/reservation_detail.html', context)
 
+
+@customer_only_access
 @login_required(login_url='signup')
 def search_reservations(request):
     query = request.GET.get('reservation_date')
@@ -425,6 +432,7 @@ def categories_card(request, *args, **kwargs):
 
     return render(request, 'customer/cards.html', context)
 
+@customer_only_access
 @never_cache
 @login_required(login_url='signup')
 def checkout(request):
@@ -466,6 +474,7 @@ def checkout(request):
     return render(request, 'customer/checkout.html', context)
 
 
+@customer_only_access
 @login_required(login_url='signup')
 def order_tables_user(request):
     categories = Category.objects.all()
@@ -502,8 +511,15 @@ def kitchen_home(request):
     if request.user.is_authenticated:
         manager = User.objects.get(email=request.user.email)
         inventories = Inventory.objects.all()
+        orders_count = Order.objects.all().count()
+        print(orders_count, Order.objects.all())
+        user_count = User.objects.filter(id__contains = "CUS").count()
+        OrderStatus_process = OrderStatus.objects.get(order_status_type="process")
+        OrderStatus_completed = OrderStatus.objects.get(order_status_type="completed")
+        order_process_count = Order.objects.filter(order_status = OrderStatus_process).count()
+        order_completed_count = Order.objects.filter(order_status = OrderStatus_completed).count()
         print(inventories, manager)
-        context = {"manager":manager, 'inventories':inventories}
+        context = {"manager":manager, 'inventories':inventories, "order_count":orders_count, "order_process":order_process_count,"order_completed":order_completed_count, "user_count":user_count}
     return render(request, 'manager/kitchen_home.html', context)
 
 @restrict_customer

@@ -8,41 +8,43 @@
         cursor: default;
         color: gray; /* Optional: make it visually clear that the link is disabled */
     }
+    .dashboard .container {
+        margin-bottom: 20px;
+    }
+    .icon {
+        font-size: 40px;
+        margin-top: 10px;
+    }
 </style>
 
 <div class="dashboard">
     <div class="container">
         <div class="content">
             <h3>Total Orders</h3>
-            <p class="animate-number"><strong>457</strong></p>
+            <p class="animate-number"><strong>{{ order_count }}</strong></p>
         </div>
         <i class="fas fa-shopping-basket icon" aria-hidden="true"></i>
     </div>
     <div class="container">
         <div class="content">
-            <h3>Orders Pending</h3>
-            <p class="animate-number"><strong>5000</strong></p>
+            <h3>Orders in Process</h3>
+            <p class="animate-number"><strong>{{ order_process }}</strong></p>
         </div>
-        <!-- <i class="fas fa-shopping-basket icon" aria-hidden="true"></i> -->
         <i class="fas fa-clock icon" aria-hidden="true"></i>
-
     </div>
     <div class="container">
         <div class="content">
-            <h3>On Delivery</h3>
-            <p class="animate-number"><strong>457</strong></p>
+            <h3>Total Customers</h3>
+            <p class="animate-number"><strong>{{ user_count }}</strong></p>
         </div>
-        <!-- <i class="fas fa-shopping-basket icon" aria-hidden="true"></i> -->
-        <i class="fas fa-truck icon" style="text-align: center;"></i>
+        <i class="fas fa-user icon" style="text-align: center;"></i>
     </div>
     <div class="container">
         <div class="content">
-            <h3>Orders Delivered</h3>
-            <p class="animate-number"><strong>457</strong></p>
+            <h3>Orders Completed</h3>
+            <p class="animate-number"><strong>{{ order_completed }}</strong></p>
         </div>
-        <!-- <i class="fas fa-shopping-basket icon" aria-hidden="true"></i> -->
         <i class="fas fa-check-double icon" style="width: 40px; text-align: center;"></i>
-        
     </div>
 </div>
 
@@ -70,13 +72,13 @@
         <tbody class="inv-detail">
             {% for inventory in inventories %}
             <tr>
-                <td>{{inventory.menu.menu_name}}</td>
-                <td>{{inventory.max_level_stock}}</td>
-                <td>{{inventory.min_level_stock}}</td>
-                <td>{{inventory.inventory_quantity}}</td>
+                <td>{{ inventory.menu.menu_name }}</td>
+                <td>{{ inventory.max_level_stock }}</td>
+                <td>{{ inventory.min_level_stock }}</td>
+                <td>{{ inventory.inventory_quantity }}</td>
                 {% if inventory.inventory_quantity < inventory.min_level_stock %}
                 <td><span class="status out-stock">Out Of Stock</span></td>
-                <td><a href="#" class="out-of-stock" data-item-name="{{inventory.menu.id}}" data-item-qnt="{{inventory.inventory_quantity}}">Restock</a></td>
+                <td><a href="#" class="out-of-stock" data-item-name="{{ inventory.menu.id }}" data-item-qnt="{{ inventory.inventory_quantity }}">Restock</a></td>
                 {% else %}
                 <td><span class="status stock">In Stock</span></td>
                 <td><a href="#" class="disabled-link">Restock</a></td>
@@ -85,24 +87,25 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Handle the restore inventory button click
-        document.querySelectorAll(".out-of-stock").forEach(restore_btn => {
-            restore_btn.addEventListener('click', (e) => {
+        // Handle the restock button click
+        document.querySelectorAll(".out-of-stock").forEach(restoreBtn => {
+            restoreBtn.addEventListener('click', function (e) {
                 e.preventDefault();
-                let menu_item_id = restore_btn.getAttribute('data-item-name');
-                let item_inv = restore_btn.getAttribute('data-item-qnt');
-                
-                fetch(`/inventory-restore?menu-item-id=${menu_item_id}&item_inv=${item_inv}`)
+                let menuItemId = this.getAttribute('data-item-name');
+                let itemInv = this.getAttribute('data-item-qnt');
+
+                fetch(`/inventory-restore?menu-item-id=${menuItemId}&item_inv=${itemInv}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
                             let context = data.context;
                             let tableBody = document.querySelector('.inv-detail');
                             let tableRow = Array.from(tableBody.querySelectorAll('tr')).find(row => {
-                                return row.querySelector(`.out-of-stock[data-item-name="${menu_item_id}"]`);
+                                return row.querySelector(`.out-of-stock[data-item-name="${menuItemId}"]`);
                             });
 
                             if (tableRow) {
@@ -126,22 +129,17 @@
                                     restockLink.setAttribute('href', '');
                                     restockLink.removeAttribute('data-item-qnt');
                                 }
-
-                                
                             }
                         } else {
                             console.error(data.error);
-                            
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        
                     });
             });
         });
     });
 </script>
 
-</div>
 {% endblock %}
