@@ -14,6 +14,7 @@
 
     <!-- Bootstrap css -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     
 
@@ -240,6 +241,15 @@
                 }
             }
 
+            #navbar-heading {
+               
+                color: rgb(221, 190, 106);
+                font-size: 20px;
+               
+            }
+
+           
+
 
 
     </style>
@@ -250,7 +260,7 @@
             <div class="col-12">
                 <nav id="navbar" class="navbar fixed-top">
                     <div class="container-fluid">
-                        <a class="navbar-brand" href="{% url 'home' %}" id="navbar-heading">C for Cafeteria</a>
+                        <a class="navbar-brand Content" href="{% url 'home' %}" id="navbar-heading"><h2 class="logo" style="font-size: 50px;"><i class='bx bx-bowl-hot'></i>Cafeteria</h2></a>
                         <div class="d-flex ms-auto">
                             {% if not user.is_authenticated %}
                             <!-- Login Button -->

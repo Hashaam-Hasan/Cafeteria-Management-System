@@ -280,6 +280,8 @@ def remove_item(request):
 @customer_only_access
 @login_required(login_url='signup')
 def Add_to_Cart(request):
+
+    
     
     if request.user.is_authenticated:
         
@@ -342,7 +344,7 @@ def Add_to_Cart(request):
         else: 
             
             return JsonResponse({"error": "No Stock", "check":True})   
-    return JsonResponse({'error': 'Try Again'})
+    return JsonResponse({'error': 'Try Again', "check":True})
 
 
 
@@ -423,12 +425,19 @@ def search_reservations(request):
     return JsonResponse({'reservations': reservations_list})
 
 def categories_card(request, *args, **kwargs):
+    
+    check = False
+
+    if request.user.is_authenticated:
+        print("HELLO WORLD")
+        check = True
+    
 
     category_name = kwargs['category_name']  #{key: value}
     category = Category.objects.get(category_name=category_name) 
     categories = Category.objects.all()
     menu_items = MenuItem.objects.filter(catagory=category.id) 
-    context = {'menus': menu_items, 'categories': categories}
+    context = {'menus': menu_items, 'categories': categories, 'check': check}
 
     return render(request, 'customer/cards.html', context)
 

@@ -140,11 +140,11 @@
                 let row = `<tr>
                     <td>${context.order_id}</td>
                     <td>${context.customer_id}</td>
-                    <td>${context.address}</td>
-                    <td>${context.contact_no}</td>
+                    <td>${context.payment.address}</td>
+                    <td>${context.payment.contact_no}</td>
                     <td>${formattedDate}</td>
                     <td><span class="status ${context.order_status == 'process' ? 'pending' : context.order_status == 'completed' ? 'stock' : ''}">${context.order_status}</span></td>
-                    <td>${context.orderItem_count}</td>
+                    <td>${context.orderItem_qnt}</td>
                     <td><a href="/order-detail/${context.order_id}/${context.customer_id}">SHOW DETAILS</a></td>
                     <td><a href="#" style="padding: 1rem; text-transform: uppercase;" class="${context.order_status == 'completed' ? 'disabled-link' : 'action-btn'}" data-order-id="${context.order_id}">Completed</a></td>
                 </tr>`;

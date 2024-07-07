@@ -76,49 +76,73 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             let menuName = button.getAttribute('data-menu-name');
             console.log('Menu Name:', menuName);
-
+            // Example: Storing user info in local storage after login
+            localStorage.setItem('currentUser', JSON.stringify({ username: 'john_doe', userId: 123 }));
+            
+            
+            let  check = "{{check}}"
             // // Example of sending menuID to the server using Fetch API
-            fetch(`/add-to-cart?menu-name=${menuName}`, {
-                // method: 'POST',
-                // headers: {
-                //     'Content-Type': 'application/json',
-                //     'X-CSRFToken': '{{ csrf_token }}' // Ensure you include CSRF token if using Django
-                // },
-                // body: JSON.stringify({ menu_id: menuID })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // console.log('Success:', data);
-                console.log('Success:', data.check);
-                    if (!data.check) {
-                        Swal.fire({
-                        title: 'Success!',
-                        text: data.success,
-                        icon: 'success',
+
+            if (check !== "False") {
+                fetch(`/add-to-cart?menu-name=${menuName}`, {
+                    // method: 'POST',
+                    // headers: {
+                    //     'Content-Type': 'application/json',
+                    //     'X-CSRFToken': '{{ csrf_token }}' // Ensure you include CSRF token if using Django
+                    // },
+                    // body: JSON.stringify({ menu_id: menuID })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // console.log('Success:', data);
+                    console.log('Success:', data.check);
+                        if (!data.check) {
+                            Swal.fire({
+                            title: 'Success!',
+                            text: data.success,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                        }
+                        else if (data.check) {
+                            Swal.fire({
+                            title: 'Warning!',
+                            text: data.error,
+                            icon: 'warning',
+                            confirmButtonText: 'OK'
+                        });
+                        }
+                        
+                    
+                    // Handle success response
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Something went wrong!',
+                        icon: 'error',
                         confirmButtonText: 'OK'
                     });
-                    }
-                    else if (data.check) {
-                        Swal.fire({
+                });
+
+            }
+
+            else {
+                Swal.fire({
                         title: 'Warning!',
-                        text: data.error,
+                        text: 'Login required',
                         icon: 'warning',
                         confirmButtonText: 'OK'
                     });
-                    }
-                    
-                
-                // Handle success response
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Something went wrong!',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            });
+            }
+            
+            if (check) {
+                console.log(typeof(check.json))
+                 
+            }
+            
+           
         });
     });
 });

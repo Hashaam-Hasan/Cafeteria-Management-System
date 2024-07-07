@@ -150,7 +150,14 @@
 
             <div class="text-sci">
                 <h2>Welcome!<br><span>Peaking Your Appetite</span> </h2>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Non et animi esse atque rerum ipsum accusantium illo nihil reprehenderit perspiciatis cumque ad quasi excepturi, earum incidunt magni provident magnam doloribus.</p>
+                <p>Experience a new way of managing your cafeteria needs. At Cafeteria, we are dedicated to providing a seamless and enjoyable dining experience.
+                    <ul style="padding-left: 1rem;">
+                        <li style="font-size: 1.2rem;"><strong style="font-size: 1.5rem;">Effortless Ordering:</strong> Quick and easy meal orders.</li>
+                        <li style="font-size: 1.2rem;"><strong style="font-size: 1.5rem;">Customized Menus:</strong> Personalized recommendations based on your preferences.</li>
+                        <li style="font-size: 1.2rem;"><strong style="font-size: 1.5rem;">Special Offers:</strong> Access to exclusive discounts and promotions.</li>
+                        <li style="font-size: 1.2rem;"><strong style="font-size: 1.5rem;">Order History Tracking:</strong> Keep track of your past orders for convenience.</li>
+                    </ul>
+                </p>
                 <div class="social-icons">
                     <a href="#"><i class='bx bxl-facebook'></i></a>
                     <a href="#"><i class='bx bxl-instagram'></i></a>
@@ -183,7 +190,7 @@
                     <div class="user-type">
                         <label for="userType">User Type:</label>
                         <select id="userType" name="userType">
-                            <option value="admin">Admin</option>
+                            <option value="admin">Select</option>
                             <option value="customer">Customer</option>
                             <option value="manager">Manager</option>
                         </select>
@@ -256,11 +263,7 @@
                 <form method="post" action="{% url 'signup' %}">{% csrf_token %}
                     <h2>Sign Up</h2>
 
-                    <div class="input-box">
-                        <span class="icon"><i class='bx bxs-envelope'></i></span>
-                        <input type="text" name="name" required>
-                        <label>Name</label>
-                    </div>
+                    
 
                     <div class="input-box">
                         <span class="icon"><i class='bx bxs-envelope'></i></span>
