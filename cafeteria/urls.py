@@ -14,4 +14,7 @@ urlpatterns = [
     path('signin/<str:type>/', signin, name='signin'),
     path('signout/', signout, name="signout"),
     path('categories-cards/<str:category_name>', categories_card, name="categories-cards"),
+    #############################################################################
+    path('orders/', order_list_view, name='order_list'),
+    path('order/<int:order_id>/', order_detail_view, name='order_detail'),
 ]

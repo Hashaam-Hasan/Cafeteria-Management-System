@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="kitchen.css">
+    <title>Document</title>
+</head>
+<body>
+    
+
+
+    <div class="customer_detail">
+        <h4>{{ order.user.f_name }} {{ order.user.l_name }}</h4>
+        <h4>Customer ID: {{ order.user.id }}</h4>
+        <h4>Order ID: {{ order.id }}</h4>
+    </div>
+
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Product Name</th>
+                    <th>QUNATITY</th>
+                    <th>STATUS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_items %}
+                <tr>
+                    <td><img src="{{ item.menu.menu_image.url }}" alt="" width="50px" height="50px"></td>
+                    <td>{{ item.menu.menu_name }}</td>
+                    <td>{{ item.order_item_quantity }}</td>
+                    <td>
+                        <select name="status" id="status-{{ item.id }}" class="select_status" data-item-id="{{ item.id }}">
+                            {% for status in order_statuses %}
+                            <option value="{{ status.id }}" {% if order.order_status == status %}selected{% endif %}>{{ status.order_status_type }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="toggle-sidebar">
+        <div class="hamburger-1"></div>
+        <div class="hamburger-2"></div>
+        <div class="hamburger-3"></div>
+    </div>
+
+    <div class="offcanvas">
+        
+       
+        <div class="offcanvas-sidebar">
+            <!-- Order content -->
+
+
+            <h2>Recipionist</h2>
+
+
+            <div class="content">
+                <nav>
+                    <li><a href="/kitchen.html">Dashboard</a></li>
+                    <li><a href="/Orders_kitchen.html">Orders</a></li>
+                </nav>
+                <nav>
+                    <li><a href="">Log Out</a></li>
+                </nav>
+            </div>
+        </div>
+        
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.7/odometer.min.js" integrity="sha512-v3fZyWIk7kh9yGNQZf1SnSjIxjAKsYbg6UQ+B+QxAZqJQLrN3jMjrdNwcxV6tis6S0s1xyVDZrDz9UoRLfRpWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!--  -->
+    <script src="./kitchen.js" ></script>
+
+
+
+
+
+
+    <!-- status update handle karne ka form -->
+     <!-- form ki implementation -->
+
+<!-- 
+    <form method="POST">
+        {% csrf_token %}
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Product Name</th>
+                    <th>QUANTITY</th>
+                    <th>STATUS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_items %}
+                <tr>
+                    <td><img src="{{ item.menu.menu_image.url }}" alt="" width="50px" height="50px"></td>
+                    <td>{{ item.menu.menu_name }}</td>
+                    <td>{{ item.order_item_quantity }}</td>
+                    <td>
+                        <select name="status" class="select_status" data-item-id="{{ item.id }}">
+                            {% for status in order_statuses %}
+                            <option value="{{ status.id }}" {% if order.order_status == status %}selected{% endif %}>{{ status.order_status_type }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">Update Status</button>
+    </form>
+    
+
+</body>
+</html> -->

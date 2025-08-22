@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'kitchen.css' %}">
+</head>
+<body>
+    <div class="order-body">
+        <h1>Order's List<span class="underline-head"></span></h1>
+        <div class="sort-search-order">
+            <div class="search-form">
+                <form action="#" method="get">
+                    <input type="text" name="search" placeholder="Search Order by Order ID...">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <div class="sort-btn">
+                <a href="" class="Pending">Pending</a>
+                <a href="" class="On-Delivery">On Delivery</a>
+                <a href="" class="Delivered">Delivered</a>
+            </div>
+        </div>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer ID</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                    <th>Quantity</th>
+                    <th>Show Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.user.id }}</td>
+                    <td>{{ order.user.email }}</td>
+                    <td><span class="status {{ order.order_status.order_status_type|lower }}">{{ order.order_status.order_status_type }}</span></td>
+                    <td>{{ order.total_price }}</td>
+                    <td><a href="{% url 'order_detail' order.id %}">SHOW DETAILS</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="toggle-sidebar">
+        <div class="hamburger-1"></div>
+        <div class="hamburger-2"></div>
+        <div class="hamburger-3"></div>
+    </div>
+    <div class="offcanvas">
+        <div class="offcanvas-sidebar">
+            <h2>Recipionist</h2>
+            <div class="content">
+                <nav>
+                    <li><a href="/kitchen.html">Dashboard</a></li>
+                    <li><a href="/orders/">Orders</a></li>
+                </nav>
+                <nav>
+                    <li><a href="">Log Out</a></li>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.7/odometer.min.js" integrity="sha512-v3fZyWIk7kh9yGNQZf1SnSjIxjAKsYbg6UQ+B+QxAZqJQLrN3jMjrdNwcxV6tis6S0s1xyVDZrDz9UoRLfRpWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{% static 'kitchen.js' %}"></script>
+</body>
+</html>
