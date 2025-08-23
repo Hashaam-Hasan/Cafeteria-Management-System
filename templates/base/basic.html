@@ -14,6 +14,7 @@
 
     <!-- Bootstrap css -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     
 
@@ -33,6 +34,14 @@
             body {
                 overflow-x: hidden;
             }
+
+            /* .footer {
+    background: linear-gradient(to right, rgb(46, 45, 45), black);;
+    color: white;
+    padding: 40px 0;
+    
+   
+  } */
             .nav-item {
                     padding: 1rem 2rem;
                 }
@@ -232,6 +241,15 @@
                 }
             }
 
+            #navbar-heading {
+               
+                color: rgb(221, 190, 106);
+                font-size: 20px;
+               
+            }
+
+           
+
 
 
     </style>
@@ -242,7 +260,7 @@
             <div class="col-12">
                 <nav id="navbar" class="navbar fixed-top">
                     <div class="container-fluid">
-                        <a class="navbar-brand" href="#" id="navbar-heading">C for Cafeteria</a>
+                        <a class="navbar-brand Content" href="{% url 'home' %}" id="navbar-heading"><h2 class="logo" style="font-size: 50px;"><i class='bx bx-bowl-hot'></i>Cafeteria</h2></a>
                         <div class="d-flex ms-auto">
                             {% if not user.is_authenticated %}
                             <!-- Login Button -->
@@ -251,12 +269,16 @@
                             </button>
                             {% else %}
                             <button class="btn btn-primary me-2" type="button" id="login-btn">
+                                <a href="{% url 'order-tables-user' %}" style="text-decoration: none; color: inherit; background-color: inherit;">Order History</a>
+                            </button>
+                            <button class="btn btn-primary me-2" type="button" id="login-btn">
                                 <img src="{% static 'icons/user-regular.svg' %}" height="20px" width="20px">
                                 {{user.email}}
                             </button>
                             <button class="btn btn-primary me-2" type="button" id="login-btn">
                                 <a href="{% url 'signout' %}" style="text-decoration: none; color: inherit; background-color: inherit;">Logout</a>
                             </button>
+                            
                             {% endif %}
                             <!-- Navbar Toggler -->
                             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
@@ -320,14 +342,16 @@
 
         <!----------------------   Category Offcanva  End ----------------------------- -->
         
-    
+        <div class = "row">
+            <div class = "col">
         {% block content %}{% endblock %}
+            </div>
+        </div>
     
         <!-------------------------FOOTER START--------------------------->
         
-        <div class = "row">
-            <div class = "col">
-                <footer class="footer">
+        
+                <!-- <footer class="footer">
                     <div class="container text-center">
                       <h5 class="mb-4">Follow Us</h5>
                       <div class="social-icons">
@@ -365,9 +389,8 @@
                       <hr class="my-4">
                       <p>&copy; 2024  C for Cafeteria</p>
                     </div>
-                  </footer>
-            </div>
-        </div>
+                  </footer> -->
+            
 
         <!-------------------------FOOTER END----------------------------->
     </div>
@@ -381,7 +404,7 @@
     <script src="{% static 'javascript/home.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
      <!-- Zobo Javascript -->
-    <!-- <script src="{% static 'javascript/cus_script.js' %}" ></script> -->
+    <script src="{% static 'javascript/cus_script.js' %}" ></script>
 
     <script>
         let cat_menu_offcanva_btn = document.querySelectorAll(".catagories-link")
@@ -405,6 +428,8 @@ arrow_back.addEventListener('click', (e)=>{
     category_offcanva_div.classList.remove('category-offcanva-active')
     category_offcanva_div.classList.add('category-offcanva-not-active')
 })
+
+
     </script>
 </body>
 </html>

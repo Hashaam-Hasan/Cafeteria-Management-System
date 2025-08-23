@@ -1,0 +1,161 @@
+{% extends 'base/basic.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'customer_css/checkout.css' %}">
+{% endblock %}
+
+{% block content %}
+<style>
+        
+    /* .MainSection {
+        height: 100vh;
+    } */
+
+    .CheckoutImg{
+        width: 98vw;
+        height: 45vh;
+        background-image: url("/static/images/customer_images/delicious-food-breakfast.jpeg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size:cover;
+        object-position: center;
+        object-fit: contain;
+        position: relative;
+        
+
+    }
+    
+</style>
+<section >
+
+    
+
+
+    <div class="CheckoutImg">
+        <div class="BlackBox"></div>
+        <div class="CheckoutText">
+            <div class="Text1">Checkout</div>
+            <div class="Text2">Home/Checkout</div>
+        </div>
+    </div>
+
+    <div class="MainSection">
+
+        <div class="BillingsDetails">
+            <div class="heading" style="width: 100%;">
+                <p>Billing Details</p>
+            </div>
+            <form method = "post" action="{% url 'checkout' %}" >{% csrf_token %}
+                <div class="div" style="display: flex; flex-direction: row; flex-wrap: wrap;">
+                    <div class="feild">FirstName*<input id="inputfield" type="text" placeholder="FirstName" value="{{user.f_name}}" disabled></div>
+                    <div class="feild">LastName* <input id="inputfield" type="text" placeholder="LastName" value="{{user.l_name}}" disabled></div>
+                    <div class="feild">Email* <input id="inputfield" type="text" placeholder="Email" value="{{user.email}}" disabled></div>
+                    <div class="feild">Address* <input id="inputfield" type="text" placeholder="Address" name="address" required></div>
+                    <div class="feild">ContactNo* <input id="inputfield" type="text" placeholder="ContactNo" name="ContactNo" required></div>
+                    <div class="feild">City/State*<input id="inputfield" type="text" placeholder="City/State" name="city" required></div>
+                    <div class="feild">Payment Type*<input id="inputfield" type="text" placeholder="Payment Type" name="payment_type" value="Cash On Delivery" ></div>
+                    <div class="feild order-type">Order Type*
+                        <select name="OrderType" >
+                            <option value="Dining In">Dining In</option>
+                            <option value="TakeAway">TakeAway</option>
+                            <option value="Delivery">Delivery</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="CheckoutBtn">
+                    <button type="submit">PLACED ORDER</button>
+                </div>
+            </form>
+            <!-- <fieldset class="OrderInstruction">
+                <legend>Order Instructions (If any)</legend>
+                <textarea name="" placeholder="Please Write Here" id="" cols="" rows="5" style="padding: 0.2rem;"></textarea>
+            </fieldset> -->
+            
+
+
+            <!-- <div class="feild">Order Details(if any) <textarea
+                     id="inputfield"  placeholder="Order Details"></div> -->
+
+
+
+
+
+
+        </div>
+
+
+        <div class="OrderDetails">
+            <p>Order Details</p>
+            <div class="FirstContainer">
+
+                <div class="DetailBox" style="font-weight: 800; font-size: 1rem;">
+                    <div>Product</div>
+                    <div>Total</div>
+                </div>
+
+
+                {% for order in order_item %}
+                <div class="DetailBox">
+                    <div>{{order.order_item_name}} <span>x{{order.order_item_quantity}}</span></div>
+                    <div>${{order.order_item_total_price}}</div>
+                </div>
+                <hr>
+                {% endfor %}
+
+                
+
+                
+                <div class="DetailBox">
+                    <div>Total</div>
+                    {% if order.order_status == orderStatus %}
+                    <div>${{order.total_price}}</div>
+                    {% else %}
+                    <div>$0</div>
+                    {% endif %}
+                </div>
+                
+                
+            </div>
+
+            <div class="SecondContainer">
+
+                <!-- <div class="feild order-type">Order Type*
+                    <select name="OrderType">
+                        <option value="DiningIn">Dining In</option>
+                        <option value="TakeAway">TakeAway</option>
+                    </select>
+                </div>
+
+
+                <div class="feild del-loc">Delivery Location*
+                    <select name="Location">
+                        <option value="select" disabled selected>Selected</option>
+                        <option value="East District">East District</option>
+                        <option value="West District">West District</option>
+                        <option value="North District">North District</option>
+                        <option value="South District">South District</option>
+                        <option value="Malir District">Malir District</option>
+                    </select>
+                </div> -->
+
+                
+
+            </div>
+
+
+        </div>
+
+
+<script>
+    window.onload = function() {
+            if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+                location.reload();
+            }
+        };
+</script>
+
+
+
+</section>
+{% endblock %}

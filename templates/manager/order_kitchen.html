@@ -1,0 +1,191 @@
+{% extends 'base/basic_kitchen.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .disabled-link {
+        pointer-events: none;
+        cursor: default;
+        color: gray; /* Optional: make it visually clear that the link is disabled */
+    }
+</style>
+<div class="order-body">
+
+    <h1>Order's List<span class="underline-head"></span></h1>
+
+
+    <div class="sort-search-order">
+        <div class="search-form">
+            <form action="#" method="get">
+                <input type="text" class="search-order-query" name="search" placeholder="Search Order by Order ID...">
+                <button type="submit" class="search-order-id">Search</button>
+            </form>
+        </div>
+
+
+        <div class="sort-btn">
+            <a style="cursor: pointer;" class="On-Delivery btn-sort">All</a>
+            <a href="#" class="Pending btn-sort">Process</a>
+            <a href="#" class="Delivered btn-sort">Completed</a>
+        </div>
+
+
+    </div>
+</div>
+
+
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer ID</th>
+                <th>Address</th>
+                <th>Contact No</th>
+                <th>Order Date</th>
+                <th>STATUS</th>
+                <th>QUANTITY</th>
+                <th>SHOW DETAILS</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody class="search-result">
+            {% for result in results %}
+            <tr>
+                <td>{{ result.order.id }}</td>
+                <td>{{ result.user.id }}</td>
+                <td>{{ result.payment.address }}</td>
+                <td>{{ result.payment.contact_no }}</td>
+                <td>{{ result.order.order_date }}</td>
+                <td><span class="status {% if result.order.order_status.order_status_type == 'process' %}pending{% elif result.order.order_status.order_status_type == 'completed' %}stock{% endif %}">{{ result.order.order_status.order_status_type }}</span></td>
+                <td>{{ result.order_menu_qnt }}</td>
+                <td><a href="{% url 'order-detail' order_id=result.order.id user_id=result.user.id %}">SHOW DETAILS</a></td>
+                <td><a href="#" style="padding: 1rem; text-transform: uppercase;" class="{% if result.order.order_status.order_status_type == 'completed' %}disabled-link{% else %}action-btn{% endif %}" data-order-id="{{ result.order.id }}">Completed</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+       
+
+        document.addEventListener('DOMContentLoaded', function() {
+    let searchOrderBtn = document.querySelector(".search-order-id");
+    searchOrderBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        let searchInputVal = document.querySelector(".search-order-query").value;
+        if (searchInputVal) {
+            fetch(`/search-order-by-order-id?order_id=${searchInputVal}`)
+                .then(response => response.json())
+                .then(data => {
+                            let orderResults = document.querySelector('.search-result');
+                            orderResults.innerHTML = '';
+                            if (data.success) {
+                                let context = data.context;
+                                let order = context[0].order[0];
+                                let payment = context[0].payment[0];
+
+                                let orderDate = new Date(order.order_date);
+                                let formattedDate = orderDate.toLocaleString('en-US', {
+                                    month: 'long',
+                                    day: 'numeric',
+                                    year: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                    hour12: true
+                                });
+
+                                let row = `<tr>
+                                    <td>${order.order_id}</td>
+                                    <td>${order.customer_id}</td>
+                                    <td>${payment.address}</td>
+                                    <td>${payment.contact_no}</td>
+                                    <td>${formattedDate}</td>
+                                    <td><span class="status ${order.order_status == 'process' ? 'pending' : order.order_status == 'completed' ? 'stock' : ''}">${order.order_status}</span></td>
+                                    <td>${order.orderItem_qnt}</td>
+                                    <td><a href="/order-detail/${order.order_id}/${order.customer_id}">SHOW DETAILS</a></td>
+                                    <td><a href="#" style="padding: 1rem; text-transform: uppercase;" class="${order.order_status == 'completed' ? 'disabled-link' : 'action-btn'}" data-order-id="${order.order_id}">Completed</a></td>
+                                </tr>`;
+                                orderResults.innerHTML += row;
+                            } else {
+                                orderResults.innerHTML = `<tr><td colspan="9">${data.error}</td></tr>`;
+                            }
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                }
+            });
+        
+    
+
+    function updateOrderResults(data) {
+        let orderResults = document.querySelector('.search-result');
+        orderResults.innerHTML = '';
+        if (data.success) {
+            let results = data.context;
+            results.forEach(context => {
+                let orderDate = new Date(context.order_date);
+                let formattedDate = orderDate.toLocaleString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true
+                });
+
+                let row = `<tr>
+                    <td>${context.order_id}</td>
+                    <td>${context.customer_id}</td>
+                    <td>${context.payment.address}</td>
+                    <td>${context.payment.contact_no}</td>
+                    <td>${formattedDate}</td>
+                    <td><span class="status ${context.order_status == 'process' ? 'pending' : context.order_status == 'completed' ? 'stock' : ''}">${context.order_status}</span></td>
+                    <td>${context.orderItem_qnt}</td>
+                    <td><a href="/order-detail/${context.order_id}/${context.customer_id}">SHOW DETAILS</a></td>
+                    <td><a href="#" style="padding: 1rem; text-transform: uppercase;" class="${context.order_status == 'completed' ? 'disabled-link' : 'action-btn'}" data-order-id="${context.order_id}">Completed</a></td>
+                </tr>`;
+                orderResults.innerHTML += row;
+            });
+        } else {
+            orderResults.innerHTML = `<tr><td colspan="9">${data.error}</td></tr>`;
+        }
+    }
+
+    let sortBtns = document.querySelectorAll(".btn-sort");
+    sortBtns.forEach(btnSort => {
+        btnSort.addEventListener('click', function(e) {
+            e.preventDefault();
+            let innerContent = btnSort.innerHTML;
+            fetch(`/sort-by-btn?sort-type=${innerContent}`)
+                .then(response => response.json())
+                .then(data => updateOrderResults(data))
+                .catch(error => console.error(error));
+        });
+    });
+
+    // Event delegation for dynamically added elements
+    document.querySelector('.table-container').addEventListener('click', function(e) {
+        if (e.target.classList.contains('action-btn')) {
+            e.preventDefault();
+            let orderId = e.target.getAttribute('data-order-id');
+            fetch(`/change-order-status?order-id=${orderId}`)
+                .then(response => response.json())
+                .then(data => updateOrderResults(data))
+                .catch(error => console.error(error));
+        }
+    });
+});
+
+
+
+
+
+
+    </script>
+</div>
+
+{% endblock %}

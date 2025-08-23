@@ -1,0 +1,147 @@
+{% extends 'base/basic.html' %}
+{% load static %}
+
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'customer_css/CardDescription.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}
+
+
+
+
+
+{% block content %}
+<style>
+    body {
+        background-color:  #2c3e50;
+        background: url("/static/images/customer_images/cover.jpg") no-repeat;
+        background-size: cover;
+        height: 100%;
+    }
+
+    .CardDescription {
+        border: none;
+        margin-top: 12rem;
+        height: 144vh;
+    }
+
+    .RecipeDescription{
+        color: white;
+    }
+
+    .Price {
+        color: white;
+    }
+    .RecipeName {
+        color: white;
+    }
+
+    .Availability>span>b {
+        color: white;
+    }
+
+    .Availability span, .SkuWrapper {
+        color: white;
+    }
+
+    .Availability img{
+        color: white;
+        background-color: tomato;
+    }
+
+    .category_div>span>b, .category_div span {
+        color: white;
+    }
+
+    .LeftCardDescription {
+        padding: 0;
+        
+    }
+
+    .LeftCardDescription img {
+        width: 100%;
+        object-fit: cover;
+        height: 100%;
+    }
+</style>
+<section class="CardDescription">
+    <div class="LeftCardDescription">
+        <img src="{{menus.menu_image.url}}" alt="chickenwithrice">
+    </div>
+    <!-- <div class="RightCardDescriptionWrapper" style="padding: 0px 0px;"> -->
+    <div class="RightCardDescription">
+        <div class="Price">${{menus.price}}</div>
+        <div class="RecipeName">{{menus.menu_name}}</div>
+        <!-- <div class="Ratings">
+            <div class="Stars">
+                <div class="star" data-index="1"></div>
+                <div class="star" data-index="2"></div>
+                <div class="star" data-index="3"></div>
+                <div class="star" data-index="4"></div>
+                <div class="star" data-index="5"></div>
+            </div><p> (2 Reviews)</p>
+        </div> -->
+        <div class="RecipeDescription">{{menus.description}}</div>
+
+        <div class="Availability">
+            <span><b>Availability:     </b></span>
+            {% if stock %}
+            <i class="fas fa-check" style="background-color: red; padding: 0.3rem;"></i>
+            <span>In Stock</span>
+                
+                
+            {% else %}
+            <i class="fas fa-xmark"></i>
+            <span>Out Of Stock</span>
+            {% endif %}
+        </div>
+
+        <!-- <div class="Info">
+            <div class="TimeInfo">
+                <span><img src="TimeInfo.svg"  alt=""></span>
+                <span>20</span>
+                <div>Minutes</div>
+            </div>
+            <div class="IngredientsInfo">
+                <span><img src="IngredientInfo.png"  alt=""></span>
+                <span>5</span>
+                <div>Ingredients</div>
+            </div>
+            <div class="ServingInfo">
+                <span><img src="ServingInfo.png"  alt=""></span>
+                <span>4-5 </span>
+                <div>Serving</div>
+            </div>
+        </div> -->
+
+
+        <div class="AddToCardCount">
+            <input type="text" id="cart_value">
+            <span class="Counters">
+                <button onclick="incrementvalue()" id="increment">+</button>
+                <button onclick="decrementvalue()" id="decrement">-</button>
+            </span>
+            <button id="add_to_cart" class="add-to-cart" data-menu-name="{{menus.menu_name}}">ADD TO CART</button>
+            <div class="FavIconBox"><img src="{% static 'icons/heart-solid.svg' %}" alt="favourite" class="FavIcon"></div>
+        </div>
+
+        <!-- <div class="SkuWrapper"> <span><b>SKU: </b></span><span>chicken-with-rice</span></div> -->
+        <div class="category_div"><span><b>Categories: </b></span><span>{{menus.catagory.category_name}}</span></div>
+        
+
+
+    </div>
+    
+
+</section>
+<script src="{% static 'javascript/add_to_cart.js' %}" ></script>
+
+
+
+
+<script src="{% static 'javascript/carddescription.js' %}" ></script>
+{% endblock %}

@@ -44,11 +44,12 @@
             position: relative;
             z-index: 999;
             background-color: white;
-            height: 45px;
+            height: 60px;
             line-height: 40px;
             margin-bottom: 5rem;            
-            background-color: white;
+            background-color: #984513;
             backdrop-filter: blur(10px);
+            
         }
         /* marquee {
             width: 100%;
@@ -137,6 +138,7 @@
         .category-marquee-circle h4 {
             text-decoration: none;
             font-size: 17px;
+            font-size: 40px;
             
         }
 
@@ -167,45 +169,28 @@
     
     <div class="content-carousel">
         <h2>WELCOME</h2>
-        <h4>HOMIES!</h4>
+        <h4>TO C FOR CAFETERIA!</h4>
     </div>  
 
 </div>
 
 <marquee onmouseover="stop()" onmouseout="start()" direction="left">
-    
 
-    <!-- <a class="category-marquee-circle" href="">
-        <img src="{% static 'images/customer_images/cat-bev.jpeg' %}" alt="" width="100px" height="100px">
-        <h4><strong>Beverage</strong></h4>
-    </a> &nbsp; &nbsp;&nbsp; &nbsp;
-    <a class="category-marquee-circle" href="">
-        <img src="{% static 'images/customer_images/cat-bev.jpeg' %}" alt="" width="100px" height="100px">
-        <h4><strong>Beverage</strong></h4>
-    </a> &nbsp; &nbsp;&nbsp; &nbsp;
-    <a class="category-marquee-circle" href="">
-        <img src="{% static 'images/customer_images/cat-bev.jpeg' %}" alt="" width="100px" height="100px">
-        <h4><strong>Beverage</strong></h4>
-    </a> &nbsp; &nbsp;&nbsp; &nbsp;
-    <a class="category-marquee-circle" href="">
-        <img src="{% static 'images/customer_images/cat-bev.jpeg' %}" alt="" width="100px" height="100px">
-        <h4><strong>Beverage</strong></h4>
-    </a> &nbsp; &nbsp;&nbsp; &nbsp; -->
     <a class="category-marquee-circle" href="">
         <!-- <img src="{% static 'images/customer_images/cat-bev.jpeg' %}" alt="" width="100px" height="100px"> -->
-        <h4><strong>Beverage</strong></h4>
+        <h4><strong>Savor the Flavor at Our Cafeteria!</strong></h4>
     </a> &nbsp; &nbsp;&nbsp; &nbsp;
     <a class="category-marquee-circle" href="">
         <!-- <img src="{% static 'images/customer_images/cat-bev.jpeg' %}" alt="" width="100px" height="100px"> -->
-        <h4><strong>Beverage</strong></h4>
+        <h4><strong>Where Every Meal is a Delight!</strong></h4>
     </a> &nbsp; &nbsp;&nbsp; &nbsp;
     <a class="category-marquee-circle" href="">
         <!-- <img src="{% static 'images/customer_images/cat-bev.jpeg' %}" alt="" width="100px" height="100px"> -->
-        <h4><strong>Beverage</strong></h4>
+        <h4><strong>Eat Well, Live Well!</strong></h4>
     </a> &nbsp; &nbsp;&nbsp; &nbsp;
     <a class="category-marquee-circle" href="">
         <!-- <img src="{% static 'images/customer_images/cat-bev.jpeg' %}" alt="" width="100px" height="100px"> -->
-        <h4><strong>Beverage</strong></h4>
+        <h4><strong>Grab a Bite, Feel the Joy!</strong></h4>
     </a> &nbsp; &nbsp;&nbsp; &nbsp;
     
     
@@ -246,7 +231,7 @@
                             <h5 class="card-title">{{ category.category_name }}</h5>
                             <p class="card-text">{{ category.category_description }}</p>
                             <div class="card-icon">
-                                <a href="#">
+                                <a href="{% url 'categories-cards' category_name=category.category_name %}">
                                     <button type="button" class="btn btn-outline-primary" style="width:25%; color: black; border-color: black; border-radius: 15px;">Go!</button>
                                 </a>
                             </div>

@@ -64,13 +64,13 @@ body {
   transform: rotate(360deg);
 }
 
-#navbar-heading{
+/* #navbar-heading{
     font-size: 25px;
     color: black;
     font-weight: bold;
     text-decoration: none;
     text-shadow: 2px 2px rgb(246, 255, 65);
-}
+} */
 
 #login-btn{
     border-radius: 20px;
@@ -191,6 +191,7 @@ body {
     background: linear-gradient(to right, rgb(46, 45, 45), black);;
     color: white;
     padding: 40px 0;
+    
    
   }
   .footer a {

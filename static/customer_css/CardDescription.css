@@ -10,15 +10,14 @@
     display: flex;
     justify-content: center;
     /* align-items: center; */
-    height: 100vh;
-    border: 2px solid orange;
+    
     flex-wrap: wrap;
     
 }
 .LeftCardDescription{
     width: 40vw;
     min-width: 400px;
-    padding:75px 25px;
+   
     margin: 15px 15px;
     background-color: rgb(241, 236, 224);
     height: 74vh;
@@ -38,7 +37,7 @@
 .Price{
     font-weight: 700;
     font-size: 1.5rem;
-    color: rgb(78, 77, 77);
+    color: white;
     padding: 6px;
     margin: 3px 0px;
 
@@ -46,7 +45,7 @@
 .RecipeName{
     font-weight: 600;
     font-size: 2rem;
-    color: black;
+    color: white;
     padding: 4px;
     margin: 5px 0px;
 
@@ -57,7 +56,7 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    color: rgb(75, 74, 74);
+    color: white;
 
 }
 .Stars {
@@ -93,7 +92,7 @@
     font-size: 0.9rem;
     padding: 6px ;
     margin: 4px 0px 6px 0px;
-    color: rgb(82, 79, 79);
+    color: white;
 
 }
 .Availability{
@@ -105,7 +104,7 @@
 .Availability img{
     width: 1rem;
     height: 1rem;
-    color: black;
+    color: white;
     margin: 0px 6px 0px 20px;
    
 }
@@ -140,7 +139,7 @@
     
 }
 .TimeInfo span:nth-of-type(2) , .IngredientsInfo span:nth-of-type(2) , .ServingInfo span:nth-of-type(2){
-    color: black;
+    color: white;
     margin-left: 2px;
 
     padding: 2px;

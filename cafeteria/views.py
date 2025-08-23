@@ -2,7 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User as AuthUser
 from django.contrib.auth import login, authenticate, logout
 from django.http import JsonResponse
-from datetime import date 
+from datetime import date as realdate, datetime
+from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
+from django.views.decorators.cache import never_cache
+from django.db.models import Q
+from .decorators import *
 from .models import *
 
 
@@ -20,8 +25,19 @@ from .forms import OrderItemStatusForm
 
 # Create your views here.
 
+def restricted_page(request):
+    return render(request, 'customer/restricted_page.html')
 
-
+# def customer_restriction(req):
+#     if req.user.is_authenticated:
+#         user_email = req.user.email
+#         user = User.objects.get(email=user_email)
+#         role = Role.objects.get(role_name="Customer")
+#         print(user.role)
+#         if user.role == role:
+#             print("E")
+#             return redirect("restricted-page")
+#     return None
 
 ###################################  USER AUTHENTICATION ###################################
 def signup(request):
@@ -40,16 +56,18 @@ def signup(request):
         #Trying to get the latest user id in order to make new custom id for customer
         #Format CUS****
         try:
-            last_object = User.objects.latest('id')
+            last_object = User.objects.filter(id__contains="CUS").latest('user') 
+            print(last_object)
             last_id = last_object.id
             val = last_id[3:]
             val = str(int(val) + 1).zfill(4)  # Ensure the ID remains 4 digits
-        except ObjectDoesNotExist:
+        except Exception as e:
+            print(e, "Enye")
             val = "0001"  # Starting value for the first user
         
         customer_id = "CUS" + val
 
-
+        print(customer_id)
         role_type = Role.objects.get(role_name='Customer')
 
         
@@ -89,7 +107,7 @@ def signin(request, *args, **kwargs):
             elif sign_in_type.lower() == 'admin':
                 pass
             elif sign_in_type.lower() == 'manager':
-                pass
+                return redirect("manager-kitchen")
         else:
             return render(request, 'accounts/sign_in_up.html', {'error': 'Invalid-Credentials'})
     return render(request, 'accounts/sign_in_up.html')
@@ -114,41 +132,293 @@ def home(request, *args, **kwargs):
     return render(request, 'customer/home.html', context)
 
 
+@customer_only_access
+@never_cache
+@login_required(login_url='signup')
 def cart(request):
-    return render(request, 'customer/cart.html')
+    if request.user.is_authenticated:
+        user_email = request.user.email
+        user = User.objects.get(email=user_email)
+        orderStatus = OrderStatus.objects.filter(order_status_type="pending")[0]
+        try:
+            order = Order.objects.filter(user=user, order_status=orderStatus)[0]
+            orderItems = OrderItem.objects.filter(order=order)
+            order_item_split_name = ""
+            if orderItems.exists():
+                order_item_split_name = orderItems[0].order_item_name.split(" ")[0]
+            categories = Category.objects.all()
+            context = {'categories': categories, "orderItems": orderItems, "order":order} 
+            return render(request, 'customer/cart.html', context)
+        except:
+            categories = Category.objects.all()
+            context = {'categories': categories} 
+            return render(request, 'customer/cart.html', context)
 
 
+#Manipulate quantity from cart page
+@customer_only_access
+@login_required(login_url='signup')
+def cart_quantity_add(request):
+
+    if request.user.is_authenticated:
+        query_quantity = request.GET.get('quantity')
+        query_name = request.GET.get('menu_name')
+        
+        
+        try:
+            user_email = request.user.email
+            user = User.objects.get(email=user_email)
+            orderStatus = OrderStatus.objects.get(order_status_type='pending')
+            menu = MenuItem.objects.get(menu_name=query_name)
+            inventory = Inventory.objects.get(menu=menu)
+            order = Order.objects.filter(user=user, order_status=orderStatus).latest('order_date')
+            order_item = OrderItem.objects.filter(order=order, menu=menu)
+
+            print(order_item[0].order_item_quantity, query_quantity, menu.menu_name)
+            if order_item[0].order_item_quantity == int(query_quantity):
+                    print("Enter")
+
+                    orderItem_price = order_item[0].order_item_total_price
+                    orderItem_id = order_item[0].id
+
+
+
+                    return JsonResponse({"success":"success", 'orderItem_id':orderItem_id, "orderItem_price":orderItem_price, "order_total_price":order.total_price})
+
+            if (inventory.inventory_quantity-(int(query_quantity)-1)) >= inventory.min_level_stock:
+                
+                
+                
+                
+                # update_order_total(order)
+
+                # print(order_item[0].order_item_quantity-int(query_quantity) != 0, order_item[0].order_item_quantity, query_quantity)
+
+                
+
+                if order_item[0].order_item_quantity-int(query_quantity) != 0: # 6 -  5 = 1 
+                    inventory = Inventory.objects.get(menu=menu)
+                    inventory.inventory_quantity -= (int(query_quantity)-order_item[0].order_item_quantity)
+                    # print(inventory.inventory_quantity)
+                    inventory.save()
+                # print(inventory.inventory_quantity)
+                
+                order_item.update(order_item_quantity=query_quantity, order_item_total_price = menu.price * int(query_quantity) )
+
+
+                order_items = OrderItem.objects.filter(order=order)
+                
+                value_price = 0
+                for order_Item in order_items:
+                    
+                    value_price += order_Item.order_item_total_price
+                
+                order.total_price = value_price
+
+                order.save()
+
+            
+                orderItem_price = order_item[0].order_item_total_price
+                orderItem_id = order_item[0].id
+               
+    
+                return JsonResponse({"success":"success", 'orderItem_id':orderItem_id, "orderItem_price":orderItem_price, "order_total_price":order.total_price})
+            else:
+                # if order_item[0].order_item_quantity == int(query_quantity):
+                #     return JsonResponse({"success":"success"})
+                print(menu.menu_name, inventory.inventory_quantity-int(query_quantity)) 
+                return JsonResponse({"error":"No Stock"})
+
+        except Exception as e:
+            print(e)
+            return JsonResponse({"error":"Something Went Wrong"})
+
+
+#Order instance with filter
+def update_order_total(order): #Helper Function
+    order = order[0]
+    order_items = OrderItem.objects.filter(order=order)
+    print(order_items)
+    aDD = 0
+    for order_item in order_items:
+        print(order_item.order_item_total_price)
+        aDD += order_item.order_item_total_price
+    print(aDD)
+    order.total_price = aDD
+    print(order.total_price, "Inside")
+    order.save()
+
+
+#Order instance with out filter
+def update_order_total_wt_f(order): #Helper Function
+    order_items = OrderItem.objects.filter(order=order)
+    print(order_items)
+    aDD = 0
+    for order_item in order_items:
+        print(order_item.order_item_total_price)
+        aDD += order_item.order_item_total_price
+    print(aDD)
+    order.total_price = aDD
+
+    order.save()
+    
+
+#Remove item from the cart
+@customer_only_access
+@login_required(login_url='signup')
+def remove_item(request):
+    order_item_id = request.GET.get("orderItemId")
+    print(order_item_id)
+    menu_name = OrderItem.objects.filter(id=order_item_id)[0].order_item_name
+    qnt = OrderItem.objects.filter(id=order_item_id)[0].order_item_quantity #[obj]
+    OrderItem.objects.filter(id=order_item_id).delete()
+    user_email = request.user.email #Getting user email who is login in the corresponding sessions
+    user = User.objects.get(email = user_email)
+    order = Order.objects.filter(user = user).latest('order_date')
+    
+    menu = MenuItem.objects.get(menu_name=menu_name)
+    inventory = Inventory.objects.get(menu=menu)
+    inventory.inventory_quantity += qnt
+    inventory.save()
+
+
+    update_order_total_wt_f(order)
+    order_total_price = order.total_price
+    print(order_total_price, request.user.email)
+    return JsonResponse({"success":"success", "order_total_price":order_total_price})
+
+
+#Add To Cart Funcionality
+@customer_only_access
+@login_required(login_url='signup')
+def Add_to_Cart(request):
+
+    
+    
+    if request.user.is_authenticated:
+        
+        query = request.GET.get('menu-name')
+        query1 = request.GET.get('cart-quantity') 
+        
+
+        menu_item = MenuItem.objects.get(menu_name = query) #Getting The menu A/C to click menu by customer
+        user_email = request.user.email #Getting user email who is login in the corresponding sessions
+        user = User.objects.get(email = user_email)
+        order = Order.objects.filter(user = user) #Getting all the order
+        
+        inventory = Inventory.objects.get(menu=menu_item)
+        if inventory.inventory_quantity >= inventory.min_level_stock :
+            
+            order_status = OrderStatus.objects.get(id = 1) #Getting order status (Pending)
+            if order.exists():
+                
+                latest_order = Order.objects.filter(user = user).latest('order_date') #Getting the latest order by user to check if it is pending or complete
+                if latest_order.order_status.order_status_type.lower() == order_status.order_status_type.lower() :
+                    if OrderItem.objects.filter(order=latest_order,menu = menu_item).exists():
+                        orderitem = OrderItem.objects.filter(order=latest_order,menu = menu_item) 
+
+                        
+                        
+                        quantity = orderitem[0].order_item_quantity
+                        if query1 is None:
+                            orderitem.update(order_item_quantity=quantity+1, order_item_total_price = menu_item.price * (quantity + 1)) 
+                            inventory.inventory_quantity -= 1
+                            inventory.save()
+                        else:
+                            
+                            orderitem.update(order_item_quantity=quantity+int(query1), order_item_total_price = menu_item.price * (quantity + 1)) 
+                            inventory.inventory_quantity -= int(query1)
+                            inventory.save()
+                        update_order_total_wt_f(latest_order) 
+                        return JsonResponse({"success":"Successfully Updated", "check":False})
+                    else:
+                        order_item = OrderItem.objects.create(menu = menu_item, 
+                        order_item_name = menu_item.menu_name,order = latest_order, order_item_quantity = 1,
+                        order_item_total_price = menu_item.price)
+                        inventory.inventory_quantity -= 1
+                        inventory.save()
+                        update_order_total_wt_f(latest_order) 
+                        return JsonResponse({"success":"Successfully Added", "check":False})
+                else:
+                    
+                    new_order = Order.objects.create(user=user, total_price=menu_item.price, order_status=order_status)
+                    new_order_item = OrderItem.objects.create(menu = menu_item, 
+                            order_item_name = menu_item.menu_name,order = new_order, order_item_quantity = 1,
+                            order_item_total_price = menu_item.price)
+                    return JsonResponse({"success":"Successfully Created", "check":False})
+            else:
+                    
+                    new_order = Order.objects.create(user=user, total_price=menu_item.price, order_status=order_status)
+                    new_order_item = OrderItem.objects.create(menu = menu_item, 
+                            order_item_name = menu_item.menu_name,order = new_order, order_item_quantity = 1,
+                            order_item_total_price = menu_item.price)
+                    return JsonResponse({"success":"Successfully Created", "check":False})
+        else: 
+            
+            return JsonResponse({"error": "No Stock", "check":True})   
+    return JsonResponse({'error': 'Try Again', "check":True})
+
+
+
+def card_description(request, *args, **kwargs):
+
+    categories = Category.objects.all()
+    menuName = kwargs['menu_name'] 
+    print(menuName)
+    menu_item = MenuItem.objects.get(menu_name=menuName)
+    inventory = Inventory.objects.get(menu=menu_item)
+    stock = inventory.inventory_quantity >= inventory.min_level_stock
+
+    print(menu_item.catagory.category_name)
+
+    context = {'categories': categories, "menus": menu_item, 'stock':stock}
+    return render(request, 'customer/card_description.html', context)
+
+@customer_only_access
+@login_required(login_url='signup')
 def reservation(request):
     slots = Slot.objects.all()
     tables = Table.objects.all()
-    context = {"slots": slots, "tables": tables}
-
+    categories = Category.objects.all()
+    context = {"slots": slots, "tables": tables, 'categories': categories}
+    
     if request.method == "POST":
         Date = request.POST.get('date')
         table = request.POST.get('table')
         slot = request.POST.get('slot')
-        user_email = request.user.email
-        user = User.object.get(email = user_email)
+        user_id = request.user.email
+        user = User.objects.get(email=user_id)
+        print(user_id)
 
-        #for date check
-        if Date and Date >= str(date.today()):
-            if Reservation.objects.filter(Date = Date, table= table, slot = slot).exists():
-                context["error"] = "this table is already reserved"
+        date_object = datetime.strptime(date, "%Y-%m-%d").date() #This is changing the date which is in string in to datetime object
+                                                                 # Because > or < this comaprison can not apply on different datatypes
+        if date_object >= realdate.today():
+            if not Reservation.objects.filter(reservation_date=date, table=table, slot=slot).exists():
+                slot_instance = Slot.objects.get(id=slot)
+                table_instance = Table.objects.get(id=table)
+                Reservation.objects.create(reservation_date=date_object,user = user,table=table_instance, slot=slot_instance, is_reserve=True)
+                context["error"] = 'You Reserve The Table'
+                return render(request, 'customer/reservation.html', context)
+            else:
+                context["error"] = 'This table is already Reserve'
+                return render(request, 'customer/reservation.html', context)
         else:
-            Reservation.objects.create(Date = Date, table = table, slot = slot, user = user)
-            context["successful"] = "Reservation is successfully created"
-    else:
-            context["error"] = "Reservation date must be present or in the future "
-            
-
-    reservations = Reservation.objects.all() #sari reservation context m display 
-    context["reservations"] = reservations
+            context["error"] = 'The date must be latest'
+            return render(request, 'customer/reservation.html', context)
 
     return render(request, 'customer/reservation.html', context)
 
+@customer_only_access
+@login_required(login_url='signup')
 def reservation_detail(request):
-    return render(request, 'customer/reservation_detail.html')
+    categories = Category.objects.all()
+    reservations = Reservation.objects.filter(reservation_date__gte=realdate.today())
+    context = {'categories': categories, 'reservations':reservations}
+    return render(request, 'customer/reservation_detail.html', context)
 
+
+@customer_only_access
+@login_required(login_url='signup')
 def search_reservations(request):
     query = request.GET.get('reservation_date')
     if query:
@@ -167,93 +437,373 @@ def search_reservations(request):
     return JsonResponse({'reservations': reservations_list})
 
 def categories_card(request, *args, **kwargs):
+    
+    check = False
+
+    if request.user.is_authenticated:
+        print("HELLO WORLD")
+        check = True
+    
 
     category_name = kwargs['category_name']  #{key: value}
     category = Category.objects.get(category_name=category_name) 
     categories = Category.objects.all()
     menu_items = MenuItem.objects.filter(catagory=category.id) 
-    context = {'menus': menu_items, 'categories': categories}
+    context = {'menus': menu_items, 'categories': categories, 'check': check}
 
     return render(request, 'customer/cards.html', context)
 
-
-def add_to_cart(request,*args, **kwargs):
+@customer_only_access
+@never_cache
+@login_required(login_url='signup')
+def checkout(request):
     if request.user.is_authenticated:
-        menu_item_id = kwargs['menu_item_id'] 
-        menu_item = MenuItem.objects.get(id = menu_item_id)
         user_email = request.user.email
-        user = User.object.get(email = user_email)
-        order = Order.objects.filter(user = user).latest('order_date')
-        order_status = OrderStatus.objects.get(id = 1)
-        if order.order_status == order_status :
-            if OrderItem.objects.filter(menu = menu_item).exist():
-                orderitem = OrderItem.objects.filter(menu = menu_item)
-                orderitem.order_item_quantity+=1
-            else:
-                order_item = OrderItem.objects.create(menu = menu_item, 
-                order_item_name = menu_item.menu_name,order = order, order_item_quantity = 1,
-                order_item_total_price = menu_item.price)
-    else:
-        pass
-    pass
+        user = User.objects.get(email=user_email)
+        categories = Category.objects.all()
+        order = Order.objects.filter(user=user).latest('order_date')
+        
+        orderStatus_pending = OrderStatus.objects.get(order_status_type='pending')
+        context = {"user":user, "order":order, 'categories':categories, "orderStatus":orderStatus_pending} 
+        if order.order_status == orderStatus_pending:
+            order_item = OrderItem.objects.filter(order=order)
+            context["order_item"] = order_item
+
+        if request.method == "POST":
+            address = request.POST.get('address')
+            contactno = request.POST.get("ContactNo")
+            city = request.POST.get("city")
+            orderType = request.POST.get("OrderType")
+            payment_type = request.POST.get("payment_type")
+
+            print(payment_type)
+
+            orderStatus = OrderStatus.objects.get(order_status_type='process')
+
+            
+            order.order_type = orderType
+            order.order_status = orderStatus
+            order.save()
+            Payment.objects.create(address=address, contact_no=contactno, city=city, payment_type=payment_type, order=order, user=user)
+
+            print("Successfully")
+            return redirect("order-tables-user")
+
+    print(order.total_price)     
 
 
-
-#####################################################################################################
-def order_list_view(request):
-    orders = Order.objects.all()
-    return render(request, 'order_kitchen.html', {'orders': orders})
+    return render(request, 'customer/checkout.html', context)
 
 
-def order_detail_view(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-    order_items = OrderItem.objects.filter(order=order)
-    order_statuses = OrderStatus.objects.all()
-    return render(request, 'order_details.html',
-                   {'order': order, 'order_items': order_items, 'order_statuses': order_statuses})
-
-
-
-#ye youtube se seekha tha form ka pehle to ye dekhana jeeva ko implementation khud ki h 
-# use: bas status update  form ki submission k zariye hogi
-#form banega or usko view sambhaal lenge
-
-# def order_detail_view(request, order_id):
-
-#     order = get_object_or_404(Order, id=order_id)
-#     order_items = OrderItem.objects.filter(order=order)
-#     order_statuses = OrderStatus.objects.all()
+@customer_only_access
+@login_required(login_url='signup')
+def order_tables_user(request):
+    categories = Category.objects.all()
+    context = {"categories":categories}
     
-#     if request.method == 'POST':
-#         form = OrderItemStatusForm(request.POST)
+    if request.user.is_authenticated:
+        user_email = request.user.email
+        user = User.objects.get(email=request.user)
+        # orders = Order.objects.filter(user=user)
+        orderstatus_pending = OrderStatus.objects.get(order_status_type='pending')
+        orders = Order.objects.filter(Q(user=user) & ~Q(order_status=orderstatus_pending))
+        context["orders"] = orders
+        total_items = 0
 
-#         if form.is_valid():
-#             status = form.cleaned_data['status']
-#             item_id = request.POST.get('item_id')
-#             order_item = get_object_or_404(OrderItem, id=item_id)
-#             order_item.order.order_status = status
-#             order_item.order.save()
-#             return HttpResponseRedirect(request.path_info)
+        # Iterate over each order and count the related order items
+        for order in orders:
+            orderitem = OrderItem.objects.filter(order=order).count()
+            
+            total_items += orderitem
+
+        # Add the total count to the context
+        context['qnt'] = total_items
+
+        # Debugging output (optional)
+        
+        
+    return render(request,'customer/order_statistic.html', context)
+
+######################################### RECIPTIONIST/MANAGER #######################################
+
+@restrict_customer
+@login_required(login_url='signup')
+def kitchen_home(request):
+    if request.user.is_authenticated:
+        manager = User.objects.get(email=request.user.email)
+        inventories = Inventory.objects.all()
+        orders_count = Order.objects.all().count()
+        print(orders_count, Order.objects.all())
+        user_count = User.objects.filter(id__contains = "CUS").count()
+        OrderStatus_process = OrderStatus.objects.get(order_status_type="process")
+        OrderStatus_completed = OrderStatus.objects.get(order_status_type="completed")
+        order_process_count = Order.objects.filter(order_status = OrderStatus_process).count()
+        order_completed_count = Order.objects.filter(order_status = OrderStatus_completed).count()
+        print(inventories, manager)
+        context = {"manager":manager, 'inventories':inventories, "order_count":orders_count, "order_process":order_process_count,"order_completed":order_completed_count, "user_count":user_count}
+    return render(request, 'manager/kitchen_home.html', context)
+
+@restrict_customer
+@login_required(login_url='signup')
+def orders_kitchen(request):
+    if request.user.is_authenticated:
+        results = []
+        manager = User.objects.get(email=request.user.email)
+        orderStatus = OrderStatus.objects.get(order_status_type='pending')
+        orders = Order.objects.filter(~Q(order_status=orderStatus)).order_by('-order_date')
+        for order in orders:
+            user = User.objects.get(email=order.user)
+            orderItem_count = OrderItem.objects.filter(order=order).count()
+            # print(order_count)
+            payment = Payment.objects.filter(order=order, user=user)[0]
+            # print(user, order, payment)
+            results.append({
+                "order":order,
+                "payment":payment,
+                "user":user,
+                "order_menu_qnt": orderItem_count
+            })
+        context = {"manager":manager, "results":results}
+    return render(request, 'manager/order_kitchen.html', context)
+
+@restrict_customer
+@login_required(login_url='signup')
+def orders_detail(request, *args, **kwargs):
+    if request.user.is_authenticated:
+        manager = User.objects.get(email=request.user.email)  
+        order_id = kwargs['order_id']
+        user_id = kwargs['user_id']
+        orderItems = OrderItem.objects.filter(order=Order.objects.get(id=order_id))
+        context = {"manager":manager, "OrderItems": orderItems, "user":User.objects.get(id=user_id), 'order_id':order_id}
+    return render(request, 'manager/order_detail.html', context)
+
+
+def search_order_by_order_id(request):
+    order_id = int(request.GET.get("order_id"))
+    if Order.objects.filter(id = order_id).exists():
+        
+        order = Order.objects.filter(id = order_id)
+        print(order_id, order)
+        if Payment.objects.filter(order=order[0], user=User.objects.get(id=order[0].user.id)).exists():
+            payment = Payment.objects.get(order=order[0], user=User.objects.get(id=order[0].user.id))
+            
+            order_details = [
+                {
+                    "order_id":ord.id,
+                    "customer_id":ord.user.id,
+                    "order_date":ord.order_date,
+                    "order_status":ord.order_status.order_status_type,
+                    "orderItem_qnt":OrderItem.objects.filter(order=ord).count()
+                }
+                for ord in order
+            ]
+
+            payment_detail = [
+                {
+                    "address":payment.address,
+                    "contact_no":payment.contact_no
+                }
+            ]
+
+            context = [
+                {
+                    "order":order_details,
+                    "payment":payment_detail
+                }
+            ]
+
+
+        
+            return JsonResponse({'success': 'success', 'context': context})
+        else:
+            return JsonResponse({'error': 'This order ID is not placed Yet'})        
+    return JsonResponse({'error': 'No Order by The Searched ID'})
+
+def sort_by_btn(request):
+    if request.user.is_authenticated:
+        sort_type = request.GET.get('sort-type')
+        if sort_type.lower().strip() == 'all':
+            orderStatus = OrderStatus.objects.get(order_status_type='pending')
+            orders = Order.objects.filter(~Q(order_status=orderStatus)).order_by('-order_date')
+            if orders:
+                results = []
+                for order in orders: 
+                    payment = Payment.objects.get(order=order)
+                    results.append({
+                        "order_id": order.id,
+                        "customer_id": order.user.id,
+                        "order_date": order.order_date,
+                        "order_status": order.order_status.order_status_type,
+                        "orderItem_qnt": order.orderitem_set.count(),
+                        "payment": {
+                            "address": payment.address,
+                            "contact_no": payment.contact_no
+                        }
+                    })
+
+                
+
+                    
+                
+                return JsonResponse({"success":"success", "context":results})  
+            return JsonResponse({'error': 'No Order'})
+        
+        
+        orderStatus = OrderStatus.objects.get(order_status_type=sort_type.lower().strip())
+        print(orderStatus)
+        if Order.objects.filter(order_status=orderStatus).exists():
+            orders = Order.objects.filter(order_status=orderStatus).order_by('-order_date')
+            # payment = Payment.objects.get(order=orders)
+
+            results = []
+            for order in orders:
+                payment = Payment.objects.get(order=order)
+                results.append({
+                    "order_id": order.id,
+                    "customer_id": order.user.id,
+                    "order_date": order.order_date,
+                    "order_status": order.order_status.order_status_type,
+                    "orderItem_qnt": order.orderitem_set.count(),
+                    "payment": {
+                        "address": payment.address,
+                        "contact_no": payment.contact_no
+                    }
+                })
+
+            
+
+                
+            
+            return JsonResponse({"success":"success", "context":results})  
+        return JsonResponse({'error': 'No Order'})
+
+def Inventory_Restore(request):
+
+    if request.user.is_authenticated:
+        itm_inv = request.GET.get('item_inv')
+        menu_item_id = request.GET.get('menu-item-id')
+        menu = MenuItem.objects.get(id=menu_item_id)
+
+        print(menu_item_id)
+
+
+        if Inventory.objects.filter(menu=menu).exists():
+            inventory = Inventory.objects.filter(menu=menu)[0]
+
+            inventory.inventory_quantity = inventory.max_level_stock
+            inventory.save()
+            
+            context = {
+            "inventory_name": menu.menu_name,
+            "inventory_quantity": inventory.inventory_quantity,
+            "max_level_stock": inventory.max_level_stock,
+            "min_level_stock": inventory.min_level_stock,
+            }
+            return JsonResponse({"success": "success", "context": context})
+            
+            
+
+             
+        else:
+            return JsonResponse({"error": "Something Went Wrong!"})
+
+    return JsonResponse({"success":"success"})
+
+# def change_order_status(request):
+
+#     order_id = request.GET.get('order-id')
+
+#     if Order.objects.filter(id=order_id).exists():
+        
+#         orderStatus_completed = OrderStatus.objects.get(order_status_type='completed')
+#         order_ = Order.objects.get(id = order_id)
+#         order_.order_status = orderStatus_completed
+#         order_.save()
+
+
+
+#         results = []
+#         orderStatus = OrderStatus.objects.get(order_status_type='pending')
+#         orders = Order.objects.filter(~Q(order_status=orderStatus)).order_by('-order_date')
+#         for order in orders:
+#             print(order.order_status.order_status_type)
+#             if order.id == order_id:
+#                 print(order.order_status.order_status_type)
+
+#             user = User.objects.get(email=order.user)
+#             orderItem_count = OrderItem.objects.filter(order=order).count()
+#             # print(order_count)
+#             payment = Payment.objects.filter(order=order, user=user)[0]
+#             # print(user, order, payment)
+#             results.append({
+#                 "order_id":order.id,
+#                 "order_date":order.order_date,
+#                 "order_status":order.order_status.order_status_type,
+#                 "orderItem_count":OrderItem.objects.filter(order=order).count(),
+#                 "customer_id":order.user.id,
+#                 "address":payment.address,
+#                 "contact_no":payment.contact_no,
+#                 "user":user,
+#                 "order_menu_qnt": orderItem_count
+#             })
+#         context = {"results":results}
+
+
+#         return JsonResponse({"success":"success", "context":results})
 #     else:
-#         form = OrderItemStatusForm()
+#         results = []
+#         orderStatus = OrderStatus.objects.get(order_status_type='pending')
+#         orders = Order.objects.filter(~Q(order_status=orderStatus)).order_by('-order_date')
+#         for order in orders:
+#             user = User.objects.get(email=order.user)
+#             orderItem_count = OrderItem.objects.filter(order=order).count()
+#             # print(order_count)
+#             payment = Payment.objects.filter(order=order, user=user)[0]
+#             # print(user, order, payment)
+#             results.append({
+#                 "order":order,
+#                 "payment":payment,
+#                 "user":user,
+#                 "order_menu_qnt": orderItem_count
+#             })
+#         context = {"results":results}
+#         return JsonResponse({"error":"Something Went Wrong", "context":results})
+
+   
+def change_order_status(request):
+    order_id = request.GET.get('order-id')
+
+    if not Order.objects.filter(id=order_id).exists():
+        return JsonResponse({"error": "Order not found"})
+
+    orderStatus_completed = OrderStatus.objects.get(order_status_type='completed')
+    order_ = Order.objects.get(id=order_id)
+    order_.order_status = orderStatus_completed
+    order_.save()
+
+    return get_order_context(request)
+
+def get_order_context(request):
+    results = []
+    orderStatus_pending = OrderStatus.objects.get(order_status_type='pending')
+    orders = Order.objects.filter(~Q(order_status=orderStatus_pending)).order_by('-order_date')
     
-#     return render(request, 'order_details.html', {'order': order, 'order_items': order_items,
-#                                                    'order_statuses': order_statuses, 'form': form})
+    for order in orders:
+        user = order.user
+        orderItem_count = OrderItem.objects.filter(order=order).count()
+        payment = Payment.objects.filter(order=order, user=user).first()
 
-
-
-
-#ab ye gpt wala dekhna h jeeva k saath
-# def order_detail(request, order_id):
-#     order = get_object_or_404(Order, id=order_id)
-#     order_items = OrderItem.objects.filter(order=order)
-#     #return render(request, 'order_details.html', {'order': order, 'order_items': order_items})
-#     if request.method == 'POST':
-#         form = OrderStatusForm(request.POST, instance=order)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('order_detail', order_id=order_id)
-#     else:
-#         form = OrderStatusForm(instance=order)
-#     return render(request, 'order_details.html', {'order': order, 'order_items': order_items, 'form': form})
-
+        results.append({
+            "order_id": order.id,
+            "order_date": order.order_date,
+            "order_status": order.order_status.order_status_type,
+            "orderItem_count": orderItem_count,
+            "customer_id": user.id,
+            "address": payment.address if payment else "",
+            "contact_no": payment.contact_no if payment else "",
+            "user_email": user.email,
+            "order_menu_qnt": orderItem_count
+        })
+    
+    context = {"results": results}
+    return JsonResponse({"success": "success", "context": results})
